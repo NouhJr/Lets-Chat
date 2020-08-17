@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:lets_chat/Components/Constants.dart';
-import 'package:lets_chat/main.dart';
 
 class Textfield extends StatelessWidget {
   Textfield(
@@ -10,7 +9,8 @@ class Textfield extends StatelessWidget {
       @required this.icon,
       @required this.hideText,
       @required this.controller,
-      @required this.email}) {
+      @required this.email,
+      @required this.focusNode}) {
     if (email) {
       type = TextInputType.emailAddress;
       length = 35;
@@ -28,6 +28,7 @@ class Textfield extends StatelessWidget {
   final bool email;
   var type;
   int length;
+  var focusNode;
 
   @override
   Widget build(BuildContext context) {
@@ -80,6 +81,7 @@ class Textfield extends StatelessWidget {
         controller: controller,
         maxLength: length,
         maxLengthEnforced: true,
+        focusNode: focusNode,
       ),
     );
   }

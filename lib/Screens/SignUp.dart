@@ -6,34 +6,64 @@ import 'package:lets_chat/Components/FlushBar.dart';
 import 'package:lets_chat/Screens/LogIn.dart';
 import 'package:lets_chat/Screens/Home_Screen.dart';
 
-class SigUp extends StatelessWidget {
-  SigUp({
-    Key key,
-  }) : super(key: key);
-  final email = TextEditingController();
-  final password = TextEditingController();
-  final confirmpassword = TextEditingController();
+class SigUp extends StatefulWidget {
+  @override
+  _State createState() => _State();
+}
 
-  //Method disposeEmail to remove the email controller from tree.
-  void disposeEmail() {
-    email.dispose();
+class _State extends State<SigUp> with SingleTickerProviderStateMixin {
+  AnimationController _controller;
+  Animation _animation;
+
+  FocusNode _focusNodeEmail = FocusNode();
+  FocusNode _focusNodePassword = FocusNode();
+  FocusNode _focusNodeConfirmpassword = FocusNode();
+
+  @override
+  void initState() {
+    super.initState();
+
+    _controller =
+        AnimationController(vsync: this, duration: Duration(milliseconds: 300));
+    _animation = Tween(begin: 270.0, end: 140.0).animate(_controller)
+      ..addListener(() {
+        setState(() {});
+      });
+
+    _focusNodeEmail.addListener(() {
+      if (_focusNodeEmail.hasFocus) {
+        _controller.forward();
+      } else {
+        _controller.reverse();
+      }
+    });
+
+    _focusNodePassword.addListener(() {
+      if (_focusNodePassword.hasFocus) {
+        _controller.forward();
+      } else {
+        _controller.reverse();
+      }
+    });
+
+    _focusNodeConfirmpassword.addListener(() {
+      if (_focusNodeConfirmpassword.hasFocus) {
+        _controller.forward();
+      } else {
+        _controller.reverse();
+      }
+    });
   }
 
-  ///**********************************************************************
+  @override
+  void dispose() {
+    _controller.dispose();
+    _focusNodeEmail.dispose();
+    _focusNodePassword.dispose();
+    _focusNodeConfirmpassword.dispose();
 
-  //Method disposePassword to remove the password controller from tree.
-  void disposePassword() {
-    password.dispose();
+    super.dispose();
   }
-
-  ///**********************************************************************
-
-  //Method disposePassword to remove the password controller from tree.
-  void disposeconfirmPassword() {
-    confirmpassword.dispose();
-  }
-
-  ///**********************************************************************
 
   @override
   Widget build(BuildContext context) {
@@ -47,7 +77,6 @@ class SigUp extends StatelessWidget {
             decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.only(
-                bottomLeft: Radius.circular(30),
                 bottomRight: Radius.circular(30),
               ),
             ),
@@ -84,7 +113,7 @@ class SigUp extends StatelessWidget {
             ),
           ),
           Container(
-            margin: EdgeInsets.only(top: 200, left: 30),
+            margin: EdgeInsets.only(top: _animation.value, left: 30),
             child: Column(
               children: [
                 //Email Textfield.
@@ -95,6 +124,7 @@ class SigUp extends StatelessWidget {
                   hideText: false,
                   email: true,
                   controller: email,
+                  focusNode: _focusNodeEmail,
                 ),
 
                 ///****************************************************************************/
@@ -106,6 +136,7 @@ class SigUp extends StatelessWidget {
                   hideText: true,
                   email: false,
                   controller: password,
+                  focusNode: _focusNodePassword,
                 ),
 
                 ///****************************************************************************/
@@ -117,12 +148,13 @@ class SigUp extends StatelessWidget {
                   hideText: true,
                   email: false,
                   controller: confirmpassword,
+                  focusNode: _focusNodeConfirmpassword,
                 ),
               ],
             ),
           ),
           Container(
-            margin: EdgeInsets.only(top: 420, left: 80),
+            margin: EdgeInsets.only(top: 490, left: 80),
             child: Column(
               children: [
                 ButtonTheme(
@@ -166,28 +198,55 @@ class SigUp extends StatelessWidget {
       resizeToAvoidBottomPadding: false,
     );
   }
+}
 
-  void signUpAction(BuildContext context) {
-    if (email.text.isEmpty || !email.text.contains('@')) {
-      Warning().errorMessage(context,
-          title: 'Email field error !', message: 'Please enter vaild email.');
-      email.clear();
-    } else if (password.text.isEmpty) {
-      Warning().errorMessage(context,
-          title: "Password field can't be empty !",
-          message: "Please enter your password");
-    } else if (confirmpassword.text.isEmpty) {
-      Warning().errorMessage(context,
-          title: "Confirm Password field can't be empty !",
-          message: "Please cofirm your password");
-      confirmpassword.clear();
-    } else if (confirmpassword.text != password.text) {
-      Warning().errorMessage(context,
-          title: "Password dosen't match !",
-          message: "Please enter the same password");
-      confirmpassword.clear();
-    } else {
-      Router().navigator(context, Home_Screen());
-    }
+final email = TextEditingController();
+final password = TextEditingController();
+final confirmpassword = TextEditingController();
+
+//Method disposeEmail to remove the email controller from tree.
+void disposeEmail() {
+  email.dispose();
+}
+
+///**********************************************************************
+//Method disposePassword to remove the password controller from tree.
+void disposePassword() {
+  password.dispose();
+}
+
+///**********************************************************************
+//Method disposePassword to remove the password controller from tree.
+void disposeconfirmPassword() {
+  confirmpassword.dispose();
+}
+
+///**********************************************************************
+
+void signUpAction(BuildContext context) {
+  if (email.text.isEmpty) {
+    Warning().errorMessage(context,
+        title: "Email field can't be empty !",
+        message: 'Please enter your email.');
+    email.clear();
+  } else if (!email.text.contains('@')) {
+    Warning().errorMessage(context,
+        title: 'Email field error !', message: 'Please enter vaild email.');
+  } else if (password.text.isEmpty) {
+    Warning().errorMessage(context,
+        title: "Password field can't be empty !",
+        message: "Please enter your password");
+  } else if (confirmpassword.text.isEmpty) {
+    Warning().errorMessage(context,
+        title: "Confirm Password field can't be empty !",
+        message: "Please cofirm your password");
+    confirmpassword.clear();
+  } else if (confirmpassword.text != password.text) {
+    Warning().errorMessage(context,
+        title: "Password dosen't match !",
+        message: "Please enter the same password");
+    confirmpassword.clear();
+  } else {
+    Router().navigator(context, Home_Screen());
   }
 }

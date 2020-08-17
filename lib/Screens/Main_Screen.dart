@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:lets_chat/Components/Constants.dart';
 import 'package:lets_chat/Screens/LogIn.dart';
 import 'package:lets_chat/Screens/SignUp.dart';
 import 'package:lets_chat/Components/Navigator.dart';
-import 'package:lets_chat/Components/FlushBar.dart';
 
-class Main_Screen extends StatelessWidget {
-  Main_Screen({
-    Key key,
-  }) : super(key: key);
+class Main_Screen extends StatefulWidget {
+  @override
+  _State createState() => _State();
+}
+
+class _State extends State<Main_Screen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -23,7 +25,6 @@ class Main_Screen extends StatelessWidget {
               height: 354.0,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(60.0),
                   topRight: Radius.circular(60.0),
                 ),
                 color: const Color(0xffffffff),
@@ -34,11 +35,11 @@ class Main_Screen extends StatelessWidget {
           Transform.translate(
             offset: Offset(108.0, 64.0),
             child: Container(
-              width: 144.0,
-              height: 144.0,
+              width: 120.0,
+              height: 120.0,
               decoration: BoxDecoration(
                 image: DecorationImage(
-                  image: const AssetImage('assets/conversation.png'),
+                  image: const AssetImage('assets/chat.png'),
                   fit: BoxFit.fill,
                 ),
               ),
@@ -48,9 +49,9 @@ class Main_Screen extends StatelessWidget {
             offset: Offset(7.1, 348.0),
             child: SizedBox(
               width: 347.0,
-              child: Text(
-                'Welcome to Lets Chat',
-                style: TextStyle(
+              child: TypewriterAnimatedTextKit(
+                text: ['Welcome to Lets Chat'],
+                textStyle: TextStyle(
                   fontFamily: 'Futura PT',
                   fontSize: 30,
                   color: maincolor,
@@ -58,6 +59,8 @@ class Main_Screen extends StatelessWidget {
                   fontWeight: FontWeight.w800,
                 ),
                 textAlign: TextAlign.center,
+                repeatForever: true,
+                speed: Duration(milliseconds: 300),
               ),
             ),
           ),
@@ -66,60 +69,52 @@ class Main_Screen extends StatelessWidget {
           ),
           //container to hold two buttons.
           Container(
-            margin: EdgeInsets.only(right: 45, top: 480),
+            margin: EdgeInsets.only(right: 10, top: 450, left: 60),
             child: Column(
               children: [
                 //Button bar to align the two buttons side by side.
-                ButtonBar(
-                  children: [
-                    //Log in button
-                    ButtonTheme(
-                      minWidth: 100,
-                      height: 40,
-                      child: RaisedButton(
-                        onPressed: () {
-                          Router().navigator(context, LogIn());
-                        },
-                        child: Text(
-                          'Log In',
-                          style: TextStyle(
-                            fontFamily: 'Futura PT',
-                            fontSize: 22,
-                            color: fontcolor,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(40)),
-                        color: maincolor,
+                ButtonTheme(
+                  minWidth: 250,
+                  height: 40,
+                  child: RaisedButton(
+                    onPressed: () {
+                      Router().navigator(context, LogIn());
+                    },
+                    child: Text(
+                      'Log In',
+                      style: TextStyle(
+                        fontFamily: 'Futura PT',
+                        fontSize: 22,
+                        color: fontcolor,
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
-                    SizedBox(
-                      width: 30,
-                    ),
-                    //Sign up button
-                    ButtonTheme(
-                      minWidth: 100,
-                      height: 40,
-                      child: RaisedButton(
-                        onPressed: () {
-                          Router().navigator(context, SigUp());
-                        },
-                        child: Text(
-                          'Sign Up',
-                          style: TextStyle(
-                            fontFamily: 'Futura PT',
-                            fontSize: 22,
-                            color: fontcolor,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(40)),
-                        color: maincolor,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(40)),
+                    color: maincolor,
+                  ),
+                ),
+                //Sign up button
+                ButtonTheme(
+                  minWidth: 250,
+                  height: 40,
+                  child: RaisedButton(
+                    onPressed: () {
+                      Router().navigator(context, SigUp());
+                    },
+                    child: Text(
+                      'Sign Up',
+                      style: TextStyle(
+                        fontFamily: 'Futura PT',
+                        fontSize: 22,
+                        color: fontcolor,
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
-                  ],
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(40)),
+                    color: maincolor,
+                  ),
                 ),
               ],
             ),

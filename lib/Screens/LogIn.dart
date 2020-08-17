@@ -6,29 +6,54 @@ import 'package:lets_chat/Components/FlushBar.dart';
 import 'package:lets_chat/Screens/SignUp.dart';
 import 'package:lets_chat/Screens/Home_Screen.dart';
 
-class LogIn extends StatelessWidget {
-  LogIn({
-    Key key,
-  }) : super(key: key);
+class LogIn extends StatefulWidget {
+  @override
+  _State createState() => _State();
+}
 
-  final email = TextEditingController();
-  final password = TextEditingController();
+class _State extends State<LogIn> with SingleTickerProviderStateMixin {
+  AnimationController _controller;
+  Animation _animation;
 
-  //Method disposeEmail to remove the email controller from tree.
-  void disposeEmail() {
-    email.dispose();
-    //super.dispose();
+  FocusNode _focusNodeEmail = FocusNode();
+  FocusNode _focusNodePassword = FocusNode();
+
+  @override
+  void initState() {
+    super.initState();
+
+    _controller =
+        AnimationController(vsync: this, duration: Duration(milliseconds: 300));
+    _animation = Tween(begin: 270.0, end: 160.0).animate(_controller)
+      ..addListener(() {
+        setState(() {});
+      });
+
+    _focusNodeEmail.addListener(() {
+      if (_focusNodeEmail.hasFocus) {
+        _controller.forward();
+      } else {
+        _controller.reverse();
+      }
+    });
+
+    _focusNodePassword.addListener(() {
+      if (_focusNodePassword.hasFocus) {
+        _controller.forward();
+      } else {
+        _controller.reverse();
+      }
+    });
   }
 
-  ///**********************************************************************
+  @override
+  void dispose() {
+    _controller.dispose();
+    _focusNodeEmail.dispose();
+    _focusNodePassword.dispose();
 
-  //Method disposePassword to remove the password controller from tree.
-  void disposePassword() {
-    password.dispose();
-    //super.dispose();
+    super.dispose();
   }
-
-  ///**********************************************************************
 
   @override
   Widget build(BuildContext context) {
@@ -37,19 +62,18 @@ class LogIn extends StatelessWidget {
       body: Stack(
         children: <Widget>[
           Container(
-            height: 160,
+            height: 130,
             width: 5000,
             decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.only(
-                bottomLeft: Radius.circular(30),
                 bottomRight: Radius.circular(30),
               ),
             ),
             child: Column(
               children: [
                 Container(
-                  margin: EdgeInsets.only(top: 65, right: 200),
+                  margin: EdgeInsets.only(top: 45, right: 200),
                   padding: EdgeInsets.only(left: 10),
                   child: Text(
                     'Log In',
@@ -79,7 +103,7 @@ class LogIn extends StatelessWidget {
             ),
           ),
           Container(
-            margin: EdgeInsets.only(top: 250, left: 30),
+            margin: EdgeInsets.only(top: _animation.value, left: 30),
             child: Column(
               children: [
                 //Email Textfield.
@@ -90,6 +114,7 @@ class LogIn extends StatelessWidget {
                   hideText: false,
                   email: true,
                   controller: email,
+                  focusNode: _focusNodeEmail,
                 ),
 
                 ///****************************************************************************/
@@ -101,12 +126,13 @@ class LogIn extends StatelessWidget {
                   hideText: true,
                   email: false,
                   controller: password,
+                  focusNode: _focusNodePassword,
                 ),
               ],
             ),
           ),
           Container(
-            margin: EdgeInsets.only(top: 400, left: 120),
+            margin: EdgeInsets.only(top: 430, left: 120),
             child: Column(
               children: [
                 ButtonTheme(
@@ -149,18 +175,41 @@ class LogIn extends StatelessWidget {
       resizeToAvoidBottomPadding: false,
     );
   }
+}
 
-  void logInAction(BuildContext context) {
-    if (email.text.isEmpty || !email.text.contains('@')) {
-      Warning().errorMessage(context,
-          title: 'Email field error !', message: 'Please enter vaild email.');
-      email.clear();
-    } else if (password.text.isEmpty) {
-      Warning().errorMessage(context,
-          title: "Password field can't be empty !",
-          message: "Please enter your password");
-    } else {
-      Router().navigator(context, Home_Screen());
-    }
+final email = TextEditingController();
+final password = TextEditingController();
+
+//Method disposeEmail to remove the email controller from tree.
+void disposeEmail() {
+  email.dispose();
+  //super.dispose();
+}
+
+///**********************************************************************
+
+//Method disposePassword to remove the password controller from tree.
+void disposePassword() {
+  password.dispose();
+  //super.dispose();
+}
+
+///**********************************************************************
+
+void logInAction(BuildContext context) {
+  if (email.text.isEmpty) {
+    Warning().errorMessage(context,
+        title: "Email field can't be empty !",
+        message: 'Please enter your email.');
+    email.clear();
+  } else if (!email.text.contains('@')) {
+    Warning().errorMessage(context,
+        title: 'Email field error !', message: 'Please enter vaild email.');
+  } else if (password.text.isEmpty) {
+    Warning().errorMessage(context,
+        title: "Password field can't be empty !",
+        message: "Please enter your password");
+  } else {
+    Router().navigator(context, Home_Screen());
   }
 }
