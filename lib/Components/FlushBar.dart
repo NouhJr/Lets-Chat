@@ -4,12 +4,14 @@ import 'Constants.dart';
 
 class Warning {
   void errorMessage(BuildContext context,
-      {@required String title, @required String message}) {
+      {@required String title,
+      @required String message,
+      @required IconData icons}) {
     Flushbar(
       title: title,
       message: message,
       icon: Icon(
-        Icons.warning,
+        icons,
         size: 28,
         color: Colors.red,
       ),

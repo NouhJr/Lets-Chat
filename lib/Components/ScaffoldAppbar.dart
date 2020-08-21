@@ -1,10 +1,45 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:lets_chat/Components/Constants.dart';
 import 'Reuseable_Inkwell.dart';
+import 'Navigator.dart';
+import 'package:lets_chat/Screens/Main_Screen.dart';
 
-class ScaffoldAppbar extends StatelessWidget {
+class ScaffoldAppbar extends StatefulWidget {
   ScaffoldAppbar({@required this.body});
   final Widget body;
+
+  @override
+  _State createState() => _State(body: body);
+}
+
+class _State extends State<ScaffoldAppbar> {
+  _State({@required this.body});
+  final Widget body;
+
+  final _auth = FirebaseAuth.instance;
+  FirebaseUser newUser;
+  String currentuser = '';
+
+  @override
+  void initState() {
+    getUser();
+    super.initState();
+  }
+
+  void getUser() async {
+    try {
+      final user = await _auth.currentUser();
+      if (user != null) {
+        newUser = user;
+        setState(() {
+          currentuser = newUser.email;
+        });
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -35,7 +70,7 @@ class ScaffoldAppbar extends StatelessWidget {
                 //Data goes here
                 accountName: null,
                 accountEmail: Text(
-                  'omarnouh@gmail.com',
+                  currentuser,
                   style: TextStyle(
                     fontFamily: 'Futura PT',
                     fontSize: 18,
@@ -67,6 +102,7 @@ class ScaffoldAppbar extends StatelessWidget {
               Reuseable_Inkwell(
                 InkTitle: 'Log out',
                 icon: Icons.exit_to_app,
+                OnPress: () => logOutAction(context),
               ),
             ],
           ),
@@ -74,5 +110,10 @@ class ScaffoldAppbar extends StatelessWidget {
       ),
       body: body,
     );
+  }
+
+  void logOutAction(BuildContext context) {
+    _auth.signOut();
+    Router().navigator(context, Main_Screen());
   }
 }

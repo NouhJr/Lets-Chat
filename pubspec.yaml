@@ -23,7 +23,6 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  flushbar: ^1.10.4  
 
 
   # The following adds the Cupertino Icons font to your application.
@@ -34,6 +33,11 @@ dependencies:
   firebase_core: ^0.4.5
   firebase_auth: ^0.16.1
   cloud_firestore: ^0.13.7
+  modal_progress_hud: ^0.1.3
+  connectivity: ^0.4.9
+  permission_handler: ^3.1.0
+  flushbar: ^1.10.4  
+
 
 dev_dependencies:
   flutter_test:
