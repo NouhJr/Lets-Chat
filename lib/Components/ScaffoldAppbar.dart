@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:lets_chat/Components/Constants.dart';
 import 'Reuseable_Inkwell.dart';
 import 'Navigator.dart';
@@ -112,8 +113,10 @@ class _State extends State<ScaffoldAppbar> {
     );
   }
 
-  void logOutAction(BuildContext context) {
+  void logOutAction(BuildContext context) async {
     _auth.signOut();
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.remove('email');
     Router().navigator(context, Main_Screen());
   }
 }

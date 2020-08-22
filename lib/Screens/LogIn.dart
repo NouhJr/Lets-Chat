@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/services.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:lets_chat/Components/Constants.dart';
 import 'package:lets_chat/Components/TextFields.dart';
 import 'package:lets_chat/Components/Navigator.dart';
@@ -238,6 +239,8 @@ class _State extends State<LogIn> with SingleTickerProviderStateMixin {
       try {
         final newUser = await auth.signInWithEmailAndPassword(
             email: email.text, password: password.text);
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        prefs.setString('email', email.text);
         if (newUser != null) {
           Router().navigator(context, Home_Screen());
         }
