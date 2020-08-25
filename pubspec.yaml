@@ -36,7 +36,9 @@ dependencies:
   modal_progress_hud: ^0.1.3
   connectivity: ^0.4.9
   flushbar: ^1.10.4
-  shared_preferences: ^0.5.8  
+  shared_preferences: ^0.5.8
+  firebase_storage: ^3.1.6
+  image_picker: ^0.6.7+6 
 
 
 dev_dependencies:
@@ -58,6 +60,7 @@ flutter:
   assets:
    - assets/chat.png
    - assets/login.png
+   - assets/NoUser.jpg
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
 

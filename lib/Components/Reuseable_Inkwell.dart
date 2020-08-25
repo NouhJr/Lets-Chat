@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lets_chat/Components/Constants.dart';
 
 class Reuseable_Inkwell extends StatelessWidget {
   Reuseable_Inkwell({this.InkTitle, this.OnPress, this.icon, this.iconColor});
@@ -17,13 +18,14 @@ class Reuseable_Inkwell extends StatelessWidget {
           InkTitle,
           style: TextStyle(
             fontFamily: 'Futura PT',
-            fontSize: 18,
-            color: Color(0xf0000000),
+            fontSize: 20,
+            color: maincolor,
           ),
         ),
         leading: Icon(
           icon,
           color: iconColor,
+          size: 30,
         ),
       ),
     );

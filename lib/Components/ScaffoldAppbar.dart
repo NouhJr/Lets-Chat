@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
+import 'dart:io';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:lets_chat/Components/Constants.dart';
 import 'Reuseable_Inkwell.dart';
 import 'Navigator.dart';
 import 'package:lets_chat/Screens/Main_Screen.dart';
+import 'package:lets_chat/Screens/Account.dart';
+import 'package:lets_chat/Screens/Home_Screen.dart';
 
 class ScaffoldAppbar extends StatefulWidget {
   ScaffoldAppbar({@required this.body});
   final Widget body;
-
   @override
   _State createState() => _State(body: body);
 }
@@ -17,7 +19,6 @@ class ScaffoldAppbar extends StatefulWidget {
 class _State extends State<ScaffoldAppbar> {
   _State({@required this.body});
   final Widget body;
-
   final _auth = FirebaseAuth.instance;
   FirebaseUser newUser;
   String currentuser = '';
@@ -74,16 +75,10 @@ class _State extends State<ScaffoldAppbar> {
                   currentuser,
                   style: TextStyle(
                     fontFamily: 'Futura PT',
-                    fontSize: 18,
+                    fontSize: 20,
                     color: fontcolor,
                   ),
-                ),
-                // User Picture
-                currentAccountPicture: GestureDetector(
-                  child: new CircleAvatar(
-                    backgroundColor: Color(0xffffffff),
-                    child: Icon(Icons.person, color: maincolor),
-                  ),
+                  textAlign: TextAlign.center,
                 ),
 
                 //Box holding first section (User Data)
@@ -91,19 +86,36 @@ class _State extends State<ScaffoldAppbar> {
               ),
 
               //Drawer Body
+              //Home
+              Reuseable_Inkwell(
+                InkTitle: 'Home',
+                icon: Icons.home,
+                iconColor: maincolor,
+                OnPress: () {
+                  Router().navigator(context, Home_Screen());
+                },
+              ),
+
+              //My account
               Reuseable_Inkwell(
                 InkTitle: 'My account',
                 icon: Icons.person,
-              ),
-              Reuseable_Inkwell(
-                InkTitle: 'About',
-                icon: Icons.help,
+                iconColor: maincolor,
+                OnPress: () {
+                  Router().navigator(
+                      context,
+                      Myaccount(
+                        user: currentuser,
+                      ));
+                },
               ),
 
+              //Log out.
               Reuseable_Inkwell(
                 InkTitle: 'Log out',
                 icon: Icons.exit_to_app,
                 OnPress: () => logOutAction(context),
+                iconColor: maincolor,
               ),
             ],
           ),
