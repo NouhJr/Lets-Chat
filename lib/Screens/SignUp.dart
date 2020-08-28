@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/services.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:lets_chat/Components/Constants.dart';
 import 'package:lets_chat/Components/TextFields.dart';
 import 'package:lets_chat/Components/Navigator.dart';
@@ -21,7 +22,7 @@ class _State extends State<SigUp> with SingleTickerProviderStateMixin {
 
   FocusNode _focusNodeEmail = FocusNode();
   FocusNode _focusNodePassword = FocusNode();
-  FocusNode _focusNodeConfirmpassword = FocusNode();
+  FocusNode _focusNodeuserName = FocusNode();
 
   @override
   void initState() {
@@ -50,8 +51,8 @@ class _State extends State<SigUp> with SingleTickerProviderStateMixin {
       }
     });
 
-    _focusNodeConfirmpassword.addListener(() {
-      if (_focusNodeConfirmpassword.hasFocus) {
+    _focusNodeuserName.addListener(() {
+      if (_focusNodeuserName.hasFocus) {
         _controller.forward();
       } else {
         _controller.reverse();
@@ -64,7 +65,7 @@ class _State extends State<SigUp> with SingleTickerProviderStateMixin {
     _controller.dispose();
     _focusNodeEmail.dispose();
     _focusNodePassword.dispose();
-    _focusNodeConfirmpassword.dispose();
+    _focusNodeuserName.dispose();
 
     super.dispose();
   }
@@ -135,6 +136,18 @@ class _State extends State<SigUp> with SingleTickerProviderStateMixin {
                     ),
 
                     ///****************************************************************************/
+                    //User name Textfield.
+                    Textfield(
+                      label: 'User Name',
+                      hint: 'Enter your user name',
+                      icon: Icons.vpn_key,
+                      hideText: false,
+                      email: false,
+                      controller: userName,
+                      focusNode: _focusNodeuserName,
+                    ),
+
+                    ///****************************************************************************/
                     //Password Textfield.
                     Textfield(
                       label: 'Password',
@@ -144,18 +157,6 @@ class _State extends State<SigUp> with SingleTickerProviderStateMixin {
                       email: false,
                       controller: password,
                       focusNode: _focusNodePassword,
-                    ),
-
-                    ///****************************************************************************/
-                    //ConfirmPassword Textfield.
-                    Textfield(
-                      label: 'Confirm Password',
-                      hint: 'Enter your password again',
-                      icon: Icons.vpn_key,
-                      hideText: true,
-                      email: false,
-                      controller: confirmpassword,
-                      focusNode: _focusNodeConfirmpassword,
                     ),
                   ],
                 ),
@@ -215,7 +216,7 @@ class _State extends State<SigUp> with SingleTickerProviderStateMixin {
 
   final email = TextEditingController();
   final password = TextEditingController();
-  final confirmpassword = TextEditingController();
+  final userName = TextEditingController();
   final auth = FirebaseAuth.instance;
   bool showSpinner = false;
 
@@ -232,8 +233,8 @@ class _State extends State<SigUp> with SingleTickerProviderStateMixin {
 
   ///**********************************************************************
 //Method disposePassword to remove the password controller from tree.
-  void disposeconfirmPassword() {
-    confirmpassword.dispose();
+  void disposeuserName() {
+    userName.dispose();
   }
 
   ///**********************************************************************
@@ -255,7 +256,7 @@ class _State extends State<SigUp> with SingleTickerProviderStateMixin {
       );
       email.clear();
       password.clear();
-      confirmpassword.clear();
+      userName.clear();
     } else if (!email.text.contains('.com')) {
       Warning().errorMessage(
         context,
@@ -265,7 +266,7 @@ class _State extends State<SigUp> with SingleTickerProviderStateMixin {
       );
       email.clear();
       password.clear();
-      confirmpassword.clear();
+      userName.clear();
     } else if (password.text.isEmpty) {
       Warning().errorMessage(
         context,
@@ -281,22 +282,9 @@ class _State extends State<SigUp> with SingleTickerProviderStateMixin {
         message: "Password length must be 6 characters or more",
         icons: Icons.warning,
       );
+      email.clear();
+      userName.clear();
       password.clear();
-    } else if (confirmpassword.text.isEmpty) {
-      Warning().errorMessage(
-        context,
-        title: "Confirm Password field can't be empty !",
-        message: "Please cofirm your password",
-        icons: Icons.warning,
-      );
-    } else if (confirmpassword.text != password.text) {
-      Warning().errorMessage(
-        context,
-        title: "Password dosen't match !",
-        message: "Please enter the same password",
-        icons: Icons.warning,
-      );
-      confirmpassword.clear();
     } else {
       setState(() {
         showSpinner = true;
@@ -304,6 +292,14 @@ class _State extends State<SigUp> with SingleTickerProviderStateMixin {
       try {
         final newUser = await auth.createUserWithEmailAndPassword(
             email: email.text, password: password.text);
+        await Firestore.instance
+            .collection('users')
+            .document(newUser.user.uid)
+            .setData({
+          'username': userName.text,
+          'picture': '',
+          'bio': '',
+        });
         SharedPreferences prefs = await SharedPreferences.getInstance();
         prefs.setString('email', email.text);
         if (newUser != null) {

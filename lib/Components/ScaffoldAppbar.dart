@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dart:io';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:lets_chat/Components/Constants.dart';
 import 'Reuseable_Inkwell.dart';
@@ -20,8 +21,13 @@ class _State extends State<ScaffoldAppbar> {
   _State({@required this.body});
   final Widget body;
   final _auth = FirebaseAuth.instance;
+  final fireStore = Firestore.instance;
+  DocumentReference doc;
   FirebaseUser newUser;
   String currentuser = '';
+  String currentuserEmail = '';
+  String url =
+      'https://firebasestorage.googleapis.com/v0/b/lets-chat-fbd0f.appspot.com/o/NoUser.jpg?alt=media&token=af77c942-d282-400f-8be3-aaa370928cbd';
 
   @override
   void initState() {
@@ -35,7 +41,15 @@ class _State extends State<ScaffoldAppbar> {
       if (user != null) {
         newUser = user;
         setState(() {
-          currentuser = newUser.email;
+          currentuserEmail = newUser.email;
+        });
+        final doc =
+            await fireStore.collection('users').document(user.uid).get();
+        String loggedUserName = doc['username'];
+        String imageUrl = doc['picture'];
+        setState(() {
+          currentuser = loggedUserName;
+          url = imageUrl;
         });
       }
     } catch (e) {
@@ -70,8 +84,7 @@ class _State extends State<ScaffoldAppbar> {
             children: <Widget>[
               new UserAccountsDrawerHeader(
                 //Data goes here
-                accountName: null,
-                accountEmail: Text(
+                accountName: Text(
                   currentuser,
                   style: TextStyle(
                     fontFamily: 'Futura PT',
@@ -79,6 +92,20 @@ class _State extends State<ScaffoldAppbar> {
                     color: fontcolor,
                   ),
                   textAlign: TextAlign.center,
+                ),
+                accountEmail: Text(
+                  currentuserEmail,
+                  style: TextStyle(
+                    fontFamily: 'Futura PT',
+                    fontSize: 20,
+                    color: fontcolor,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                currentAccountPicture: GestureDetector(
+                  child: new CircleAvatar(
+                    backgroundImage: NetworkImage(url),
+                  ),
                 ),
 
                 //Box holding first section (User Data)
@@ -106,6 +133,7 @@ class _State extends State<ScaffoldAppbar> {
                       context,
                       Myaccount(
                         user: currentuser,
+                        picture: url,
                       ));
                 },
               ),
