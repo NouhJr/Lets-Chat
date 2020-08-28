@@ -6,11 +6,12 @@ class Textfield extends StatelessWidget {
   Textfield(
       {@required this.label,
       @required this.hint,
-      @required this.icon,
-      @required this.hideText,
+      this.icon,
+      this.hideText,
       @required this.controller,
-      @required this.email,
-      @required this.focusNode}) {
+      this.email,
+      this.focusNode,
+      this.maxLines}) {
     if (email) {
       type = TextInputType.emailAddress;
       length = 35;
@@ -29,6 +30,7 @@ class Textfield extends StatelessWidget {
   var type;
   int length;
   var focusNode;
+  int maxLines;
 
   @override
   Widget build(BuildContext context) {

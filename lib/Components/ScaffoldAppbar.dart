@@ -26,8 +26,9 @@ class _State extends State<ScaffoldAppbar> {
   FirebaseUser newUser;
   String currentuser = '';
   String currentuserEmail = '';
+  String biography = '';
   String url =
-      'https://firebasestorage.googleapis.com/v0/b/lets-chat-fbd0f.appspot.com/o/NoUser.jpg?alt=media&token=af77c942-d282-400f-8be3-aaa370928cbd';
+      "https://firebasestorage.googleapis.com/v0/b/lets-chat-fbd0f.appspot.com/o/NoUser.jpg?alt=media&token=af77c942-d282-400f-8be3-aaa370928cbd";
 
   @override
   void initState() {
@@ -47,9 +48,11 @@ class _State extends State<ScaffoldAppbar> {
             await fireStore.collection('users').document(user.uid).get();
         String loggedUserName = doc['username'];
         String imageUrl = doc['picture'];
+        String biofromDB = doc['bio'];
         setState(() {
           currentuser = loggedUserName;
           url = imageUrl;
+          biography = biofromDB;
         });
       }
     } catch (e) {
@@ -134,6 +137,7 @@ class _State extends State<ScaffoldAppbar> {
                       Myaccount(
                         user: currentuser,
                         picture: url,
+                        bio: biography,
                       ));
                 },
               ),
