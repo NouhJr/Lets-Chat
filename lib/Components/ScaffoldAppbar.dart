@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import 'dart:io';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:connectivity/connectivity.dart';
 import 'package:lets_chat/Components/Constants.dart';
+import 'package:lets_chat/Components/FlushBar.dart';
 import 'Reuseable_Inkwell.dart';
 import 'Navigator.dart';
 import 'package:lets_chat/Screens/Main_Screen.dart';
@@ -36,6 +37,7 @@ class _State extends State<ScaffoldAppbar> {
     super.initState();
   }
 
+  //Method 'getUser' to get the current signed in  user from firebase and retrive user's email, user name , bio and picture
   void getUser() async {
     try {
       final user = await _auth.currentUser();
@@ -60,6 +62,7 @@ class _State extends State<ScaffoldAppbar> {
     }
   }
 
+  ///******************************************UI***************************************/
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -75,6 +78,9 @@ class _State extends State<ScaffoldAppbar> {
             fontWeight: FontWeight.bold,
           ),
           textAlign: TextAlign.center,
+          textHeightBehavior: TextHeightBehavior(
+            applyHeightToFirstAscent: true,
+          ),
         ),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         centerTitle: true,
@@ -157,10 +163,20 @@ class _State extends State<ScaffoldAppbar> {
     );
   }
 
+//Method 'logOutAction' to sign the user out from the app using firebase with 'signOut' method.
   void logOutAction(BuildContext context) async {
-    _auth.signOut();
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.remove('email');
-    Router().navigator(context, Main_Screen());
+    //Check if there is internet connection or not and display message error if not.
+    var connectivityResult = await (Connectivity().checkConnectivity());
+    if (connectivityResult == ConnectivityResult.none) {
+      Warning().errorMessage(context,
+          title: "No internet connection !",
+          message: "Pleas turn on wifi or mobile data",
+          icons: Icons.signal_wifi_off);
+    } else {
+      _auth.signOut();
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      prefs.remove('email');
+      Router().navigator(context, Main_Screen());
+    }
   }
 }

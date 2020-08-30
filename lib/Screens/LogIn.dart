@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/services.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:connectivity/connectivity.dart';
 import 'package:lets_chat/Components/Constants.dart';
 import 'package:lets_chat/Components/TextFields.dart';
 import 'package:lets_chat/Components/Navigator.dart';
@@ -16,9 +17,9 @@ class LogIn extends StatefulWidget {
 }
 
 class _State extends State<LogIn> with SingleTickerProviderStateMixin {
+  ///*******************************ANIMATION**********************************
   AnimationController _controller;
   Animation _animation;
-
   FocusNode _focusNodeEmail = FocusNode();
   FocusNode _focusNodePassword = FocusNode();
 
@@ -28,7 +29,7 @@ class _State extends State<LogIn> with SingleTickerProviderStateMixin {
 
     _controller =
         AnimationController(vsync: this, duration: Duration(milliseconds: 300));
-    _animation = Tween(begin: 270.0, end: 160.0).animate(_controller)
+    _animation = Tween(begin: 350.0, end: 270.0).animate(_controller)
       ..addListener(() {
         setState(() {});
       });
@@ -59,6 +60,8 @@ class _State extends State<LogIn> with SingleTickerProviderStateMixin {
     super.dispose();
   }
 
+  ///****************************UI****************************************
+
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
@@ -68,9 +71,10 @@ class _State extends State<LogIn> with SingleTickerProviderStateMixin {
           inAsyncCall: showSpinner,
           child: Stack(
             children: <Widget>[
+              //Container to hold 'Log In\n Welcome back' text.
               Container(
-                height: 130,
-                width: 5000,
+                height: 150,
+                width: 1000,
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.only(
@@ -79,8 +83,9 @@ class _State extends State<LogIn> with SingleTickerProviderStateMixin {
                 ),
                 child: Column(
                   children: [
+                    //Container to hold 'Log In' text.
                     Container(
-                      margin: EdgeInsets.only(top: 45, right: 200),
+                      margin: EdgeInsets.only(top: 60, right: 250),
                       padding: EdgeInsets.only(left: 10),
                       child: Text(
                         'Log In',
@@ -93,8 +98,10 @@ class _State extends State<LogIn> with SingleTickerProviderStateMixin {
                         textAlign: TextAlign.left,
                       ),
                     ),
+
+                    //Container to hold 'Welcome' text.
                     Container(
-                      margin: EdgeInsets.only(top: 5, right: 140),
+                      margin: EdgeInsets.only(top: 5, right: 190),
                       child: Text(
                         'Welcome back',
                         style: TextStyle(
@@ -109,71 +116,83 @@ class _State extends State<LogIn> with SingleTickerProviderStateMixin {
                   ],
                 ),
               ),
-              Container(
-                margin: EdgeInsets.only(top: _animation.value, left: 30),
-                child: Column(
-                  children: [
-                    //Email Textfield.
-                    Textfield(
-                      label: 'Email',
-                      hint: 'Enter your email',
-                      icon: Icons.email,
-                      hideText: false,
-                      email: true,
-                      controller: email,
-                      focusNode: _focusNodeEmail,
-                    ),
 
-                    ///****************************************************************************/
-                    //Password Textfield.
-                    Textfield(
-                      label: 'Password',
-                      hint: 'Enter your password',
-                      icon: Icons.vpn_key,
-                      hideText: true,
-                      email: false,
-                      controller: password,
-                      focusNode: _focusNodePassword,
-                    ),
-                  ],
-                ),
-              ),
+              //Container to hold 'email'&'password' text fields and 'Log in'&'new user?' buttons.
               Container(
-                margin: EdgeInsets.only(top: 430, left: 120),
+                margin: EdgeInsets.only(top: _animation.value, left: 60),
                 child: Column(
                   children: [
-                    ButtonTheme(
-                      minWidth: 120,
-                      height: 40,
-                      child: RaisedButton(
-                        onPressed: () => logInAction(context),
-                        child: Text(
-                          'Log In',
-                          style: TextStyle(
-                            fontFamily: 'Futura PT',
-                            fontSize: 22,
-                            color: maincolor,
-                            fontWeight: FontWeight.bold,
+                    //Container to hold 'email'&'password' text fields.
+                    Container(
+                      padding: EdgeInsets.only(top: 10),
+                      child: Column(
+                        children: [
+                          //Email Textfield.
+                          Textfield(
+                            label: 'Email',
+                            hint: 'Enter your email',
+                            icon: Icons.email,
+                            hideText: false,
+                            email: true,
+                            controller: email,
+                            focusNode: _focusNodeEmail,
                           ),
-                        ),
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(40)),
-                        color: fontcolor,
+
+                          ///****************************************************************************/
+                          //Password Textfield.
+                          Textfield(
+                            label: 'Password',
+                            hint: 'Enter your password',
+                            icon: Icons.vpn_key,
+                            hideText: true,
+                            email: false,
+                            controller: password,
+                            focusNode: _focusNodePassword,
+                          ),
+                        ],
                       ),
                     ),
-                    FlatButton(
-                        onPressed: () {
-                          Router().navigator(context, SigUp());
-                        },
-                        child: Text(
-                          'New User?',
-                          style: TextStyle(
-                            fontFamily: 'Futura PT',
-                            fontSize: 18,
-                            color: fontcolor,
+
+                    //Container to hold Log in button & 'new user?' button.
+                    Container(
+                      margin: EdgeInsets.only(top: 20, left: 20), //430
+                      child: Column(
+                        children: [
+                          ButtonTheme(
+                            minWidth: 120,
+                            height: 40,
+                            child: RaisedButton(
+                              onPressed: () => logInAction(context),
+                              child: Text(
+                                'Log In',
+                                style: TextStyle(
+                                  fontFamily: 'Futura PT',
+                                  fontSize: 22,
+                                  color: maincolor,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(40)),
+                              color: fontcolor,
+                            ),
                           ),
-                          textAlign: TextAlign.center,
-                        )),
+                          FlatButton(
+                              onPressed: () {
+                                Router().navigator(context, SigUp());
+                              },
+                              child: Text(
+                                'New User?',
+                                style: TextStyle(
+                                  fontFamily: 'Futura PT',
+                                  fontSize: 18,
+                                  color: fontcolor,
+                                ),
+                                textAlign: TextAlign.center,
+                              )),
+                        ],
+                      ),
+                    ),
                   ],
                 ),
               ),
@@ -186,6 +205,7 @@ class _State extends State<LogIn> with SingleTickerProviderStateMixin {
     );
   }
 
+  ///******************************BACK END*******************************
   Future<bool> _onWillPop() {
     SystemNavigator.pop();
   }
@@ -195,28 +215,40 @@ class _State extends State<LogIn> with SingleTickerProviderStateMixin {
   final auth = FirebaseAuth.instance;
   bool showSpinner = false;
 
-//Method disposeEmail to remove the email controller from tree.
+  //Method disposeEmail to remove the email controller from tree.
   void disposeEmail() {
     email.dispose();
   }
 
   ///**********************************************************************
 
-//Method disposePassword to remove the password controller from tree.
+  //Method disposePassword to remove the password controller from tree.
   void disposePassword() {
     password.dispose();
   }
 
   ///**********************************************************************
 
+  //Method 'logInAction' triggered when the Log in button is pressed.
   void logInAction(BuildContext context) async {
-    if (email.text.isEmpty) {
+    //Check if there is internet connection or not and display message error if not.
+    var connectivityResult = await (Connectivity().checkConnectivity());
+    if (connectivityResult == ConnectivityResult.none) {
+      Warning().errorMessage(context,
+          title: "No internet connection !",
+          message: "Pleas turn on wifi or mobile data",
+          icons: Icons.signal_wifi_off);
+    }
+    //Validate 'email' text field to make sure it's not empty.
+    else if (email.text.isEmpty) {
       Warning().errorMessage(
         context,
         title: "Email field can't be empty !",
         message: 'Please enter your email.',
         icons: Icons.warning,
       );
+
+      //Validate 'password' text field to make sure it's not empty.
     } else if (password.text.isEmpty) {
       Warning().errorMessage(
         context,
@@ -224,18 +256,13 @@ class _State extends State<LogIn> with SingleTickerProviderStateMixin {
         message: "Please enter your password",
         icons: Icons.warning,
       );
-    } else if (password.text.length < 6) {
-      Warning().errorMessage(
-        context,
-        title: "Invalid password length !",
-        message: "Password length must be 6 characters or more",
-        icons: Icons.warning,
-      );
-      password.clear();
+      email.clear();
+      //Routing the user to 'Home Screen' and display loading spinner while routing.
     } else {
       setState(() {
         showSpinner = true;
       });
+      //Sign the user in with firebase using 'signInWithEmailAndPassword' method.
       try {
         final newUser = await auth.signInWithEmailAndPassword(
             email: email.text, password: password.text);
@@ -252,6 +279,7 @@ class _State extends State<LogIn> with SingleTickerProviderStateMixin {
           showSpinner = false;
         });
 
+        //Showing error message if log in process failed.
         Warning().errorMessage(
           context,
           title: "Login failed !",

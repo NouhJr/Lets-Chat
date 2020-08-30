@@ -25,123 +25,130 @@ class _MyaccountState extends State<Myaccount> {
   final String user;
   final String picture;
   final String bio;
-
-  bool showSpinner = false;
   File _image;
+
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
       child: ScaffoldAppbar(
-        body: ModalProgressHUD(
-          inAsyncCall: showSpinner,
-          child: Stack(
-            children: [
-              //Image holder container.
-              Container(
-                height: 200,
-                margin: EdgeInsets.all(5),
-                decoration: BoxDecoration(
-                  color: subMainColor,
-                  borderRadius: BorderRadius.all(Radius.circular(10)),
-                ),
+        body: Stack(
+          children: [
+            //Image holder container.
+            Container(
+              height: 200,
+              margin: EdgeInsets.all(5),
+              decoration: BoxDecoration(
+                color: subMainColor,
+                borderRadius: BorderRadius.all(Radius.circular(10)),
               ),
+            ),
 
-              //Image container.
-              Container(
-                margin: EdgeInsets.only(top: 95, left: 105),
-                decoration: BoxDecoration(
-                  border: Border.all(
-                    color: maincolor,
-                    width: 5,
-                  ),
-                  shape: BoxShape.circle,
+            //Image container.
+            Container(
+              margin: EdgeInsets.only(top: 95, left: 130),
+              decoration: BoxDecoration(
+                border: Border.all(
+                  color: maincolor,
+                  width: 5,
                 ),
-                child: GestureDetector(
-                  child: new CircleAvatar(
-                      radius: 70, backgroundImage: NetworkImage(picture)),
-                ),
+                shape: BoxShape.circle,
               ),
-
-              //Change image button container.
-              Container(
-                margin: EdgeInsets.only(top: 210, left: 220),
-                child: ButtonTheme(
-                  child: IconButton(
-                      icon: Icon(
-                        FontAwesomeIcons.camera,
-                        size: 30.0,
-                        color: maincolor,
-                      ),
-                      onPressed: chooseFile),
-                ),
+              child: GestureDetector(
+                child: new CircleAvatar(
+                    radius: 70, backgroundImage: NetworkImage(picture)),
               ),
+            ),
 
-              //Username container.
-              Container(
-                margin: EdgeInsets.only(top: 260, left: 110),
-                child: Text(
-                  user,
-                  style: TextStyle(
-                    fontFamily: 'Futura PT',
-                    fontSize: 28,
-                    color: Color(0xf0000000),
-                    fontWeight: FontWeight.bold,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
+            //Change image button container.
+            Container(
+              margin: EdgeInsets.only(top: 195, left: 230),
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: Colors.grey.withOpacity(0.3),
               ),
-
-              //Edit bio button container.
-              Container(
-                margin: EdgeInsets.only(top: 315, left: 100),
+              child: ButtonTheme(
                 child: IconButton(
                     icon: Icon(
-                      FontAwesomeIcons.pen,
-                      size: 20.0,
+                      FontAwesomeIcons.camera,
+                      size: 30.0,
                       color: maincolor,
                     ),
-                    onPressed: editBio),
+                    onPressed: chooseFile),
               ),
+            ),
 
-              //Bio label container.
-              Container(
-                margin: EdgeInsets.only(top: 320, left: 20),
-                child: Text(
-                  'Bio:',
-                  style: TextStyle(
-                    fontFamily: 'Futura PT',
-                    fontSize: 28,
-                    color: Color(0xf0000000),
-                    fontWeight: FontWeight.bold,
+            //Username container.
+            Container(
+              margin: EdgeInsets.only(top: 260, left: 130),
+              child: Text(
+                user,
+                style: TextStyle(
+                  fontFamily: 'Futura PT',
+                  fontSize: 28,
+                  color: Color(0xf0000000),
+                  fontWeight: FontWeight.bold,
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ),
+
+            //Edit bio button container.
+            Container(
+              margin: EdgeInsets.only(top: 385, left: 140),
+              height: 43,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: Colors.grey.withOpacity(0.3),
+              ),
+              child: IconButton(
+                  icon: Icon(
+                    FontAwesomeIcons.pen,
+                    size: 25.0,
+                    color: maincolor,
                   ),
+                  onPressed: editBio),
+            ),
+
+            //Bio label container.
+            Container(
+              margin: EdgeInsets.only(top: 395, left: 10),
+              child: Text(
+                'Biography:',
+                style: TextStyle(
+                  fontFamily: 'Futura PT',
+                  fontSize: 25,
+                  color: Color(0xf0000000),
+                  fontWeight: FontWeight.bold,
                 ),
               ),
+            ),
 
-              //Bio container.
-              Container(
-                margin: EdgeInsets.only(top: 355, left: 20),
-                child: Text(
-                  bio,
-                  style: TextStyle(
-                    fontFamily: 'Futura PT',
-                    fontSize: 21,
-                    color: Color(0xf0000000),
-                    fontWeight: FontWeight.w500,
-                  ),
+            //Bio container.
+            Container(
+              margin: EdgeInsets.only(top: 430, left: 10),
+              child: Text(
+                bio,
+                style: TextStyle(
+                  fontFamily: 'Futura PT',
+                  fontSize: 21,
+                  color: Color(0xf0000000),
+                  fontWeight: FontWeight.w500,
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
       onWillPop: _onWillPop,
     );
   }
 
+  ///**************************BACK END*******************************
   Future<bool> _onWillPop() {
     SystemNavigator.pop();
   }
 
+  //Method 'chooseFile' to make the user choose photo from device's gallary.
   Future chooseFile() async {
     await ImagePicker.pickImage(source: ImageSource.gallery).then((image) {
       setState(() {
@@ -156,6 +163,7 @@ class _MyaccountState extends State<Myaccount> {
     );
   }
 
+  //Method 'editBio' to make the user change his biography.
   void editBio() {
     Router().navigator(context, Editbio());
   }

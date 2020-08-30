@@ -110,8 +110,15 @@ class SelectionState extends State<Selection> {
             'picture': uploadedImageUrl,
           });
         }
+        Warning().errorMessage(context,
+            title: "Profile picture changed !",
+            message: "Uploaded successfully",
+            icons: Icons.done);
       } catch (e) {
-        print(e);
+        Warning().errorMessage(context,
+            title: "Something went wrong !",
+            message: "Try again later",
+            icons: Icons.error);
       }
       setState(() {
         showSpinner = false;

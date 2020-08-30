@@ -14,6 +14,7 @@ class Main_Screen extends StatefulWidget {
 }
 
 class _State extends State<Main_Screen> {
+  ///**********************************UI*************************************
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
@@ -21,63 +22,57 @@ class _State extends State<Main_Screen> {
         backgroundColor: maincolor,
         body: Stack(
           children: <Widget>[
-            Container(),
-            Transform.translate(
-              offset: Offset(0.0, 286.0),
-              child: Container(
-                width: 360.0,
-                height: 354.0,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.only(
-                    topRight: Radius.circular(60.0),
-                  ),
-                  color: const Color(0xffffffff),
-                  border:
-                      Border.all(width: 1.0, color: const Color(0xff707070)),
+            //Container to hold app icon.
+            Container(
+              margin: EdgeInsets.only(top: 130, left: 140),
+              width: 180.0,
+              height: 180.0,
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                  image: const AssetImage('assets/phone.png'),
+                  fit: BoxFit.fill,
+                  scale: 20.0,
                 ),
               ),
             ),
-            Transform.translate(
-              offset: Offset(108.0, 64.0),
-              child: Container(
-                width: 120.0,
-                height: 120.0,
-                decoration: BoxDecoration(
-                  image: DecorationImage(
-                    image: const AssetImage('assets/chat.png'),
-                    fit: BoxFit.fill,
-                  ),
+
+            //Container to hold 'Welcome to lets chat' text, login button and signUp button.
+            Container(
+              margin: EdgeInsets.only(top: 420),
+              width: 445.0,
+              height: 400.0,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.only(
+                  topRight: Radius.circular(60.0),
                 ),
+                color: const Color(0xffffffff),
+                border: Border.all(width: 1.0, color: const Color(0xff707070)),
               ),
             ),
-            Transform.translate(
-              offset: Offset(7.1, 348.0),
-              child: SizedBox(
-                width: 347.0,
-                child: TypewriterAnimatedTextKit(
-                  text: ['Welcome to Lets Chat'],
-                  textStyle: TextStyle(
-                    fontFamily: 'Futura PT',
-                    fontSize: 30,
-                    color: maincolor,
-                    fontStyle: FontStyle.italic,
-                    fontWeight: FontWeight.w800,
-                  ),
-                  textAlign: TextAlign.center,
-                  repeatForever: true,
-                  speed: Duration(milliseconds: 300),
+
+            //Container to hold 'Welcome to lets chat' text.
+            Container(
+              margin: EdgeInsets.only(top: 480, left: 50),
+              child: TypewriterAnimatedTextKit(
+                text: ['Welcome to Lets Chat'],
+                textStyle: TextStyle(
+                  fontFamily: 'Futura PT',
+                  fontSize: 30,
+                  color: maincolor,
+                  fontWeight: FontWeight.w800,
                 ),
+                textAlign: TextAlign.center,
+                repeatForever: true,
+                speed: Duration(milliseconds: 300),
               ),
             ),
-            SizedBox(
-              height: 85,
-            ),
+
             //container to hold two buttons.
             Container(
-              margin: EdgeInsets.only(right: 10, top: 450, left: 60),
+              margin: EdgeInsets.only(right: 10, top: 600, left: 80),
               child: Column(
                 children: [
-                  //Button bar to align the two buttons side by side.
+                  //Log in button.
                   ButtonTheme(
                     minWidth: 250,
                     height: 40,
@@ -97,6 +92,7 @@ class _State extends State<Main_Screen> {
                       color: maincolor,
                     ),
                   ),
+
                   //Sign up button
                   ButtonTheme(
                     minWidth: 250,
@@ -127,14 +123,20 @@ class _State extends State<Main_Screen> {
     );
   }
 
+  ///**************************************BACK END*****************************************
+
+  //Method 'destination' trrigered when 'log in' or 'sign up' button pressed.
   void destination(var dest) async {
+    //Check if there is internet connection or not and display message error if not.
     var connectivityResult = await (Connectivity().checkConnectivity());
     if (connectivityResult == ConnectivityResult.none) {
       Warning().errorMessage(context,
           title: "No internet connection !",
           message: "Pleas turn on wifi or mobile data",
           icons: Icons.signal_wifi_off);
-    } else {
+    }
+    //Routing the user to 'log in screen' or to 'sign up screen' based on the button the user pressed.
+    else {
       Router().navigator(context, dest);
     }
   }

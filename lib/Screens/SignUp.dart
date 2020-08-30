@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/services.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:connectivity/connectivity.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:lets_chat/Components/Constants.dart';
 import 'package:lets_chat/Components/TextFields.dart';
@@ -17,9 +18,9 @@ class SigUp extends StatefulWidget {
 }
 
 class _State extends State<SigUp> with SingleTickerProviderStateMixin {
+  ///******************************ANIMATION*************************************
   AnimationController _controller;
   Animation _animation;
-
   FocusNode _focusNodeEmail = FocusNode();
   FocusNode _focusNodePassword = FocusNode();
   FocusNode _focusNodeuserName = FocusNode();
@@ -30,7 +31,7 @@ class _State extends State<SigUp> with SingleTickerProviderStateMixin {
 
     _controller =
         AnimationController(vsync: this, duration: Duration(milliseconds: 300));
-    _animation = Tween(begin: 270.0, end: 140.0).animate(_controller)
+    _animation = Tween(begin: 300.0, end: 200.0).animate(_controller)
       ..addListener(() {
         setState(() {});
       });
@@ -70,6 +71,7 @@ class _State extends State<SigUp> with SingleTickerProviderStateMixin {
     super.dispose();
   }
 
+  ///*************************************UI***************************************
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
@@ -79,9 +81,10 @@ class _State extends State<SigUp> with SingleTickerProviderStateMixin {
           inAsyncCall: showSpinner,
           child: Stack(
             children: <Widget>[
+              //Container to hold 'Sign Up\n Welcome' text.
               Container(
-                height: 130,
-                width: 5000,
+                height: 150,
+                width: 1000,
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.only(
@@ -90,8 +93,9 @@ class _State extends State<SigUp> with SingleTickerProviderStateMixin {
                 ),
                 child: Column(
                   children: [
+                    //Container to hold 'Sign Up' text.
                     Container(
-                      margin: EdgeInsets.only(top: 45, right: 200),
+                      margin: EdgeInsets.only(top: 60, right: 250),
                       padding: EdgeInsets.only(left: 10),
                       child: Text(
                         'Sign Up',
@@ -104,8 +108,10 @@ class _State extends State<SigUp> with SingleTickerProviderStateMixin {
                         textAlign: TextAlign.left,
                       ),
                     ),
+
+                    //Container to hold 'Welcome' text.
                     Container(
-                      margin: EdgeInsets.only(top: 5, right: 220),
+                      margin: EdgeInsets.only(top: 5, right: 270),
                       child: Text(
                         'Welcome',
                         style: TextStyle(
@@ -120,82 +126,93 @@ class _State extends State<SigUp> with SingleTickerProviderStateMixin {
                   ],
                 ),
               ),
+
+              //Container to hold 'email', 'user name'&'password' text fields and 'Sign Up'&'Already have account?' buttons.
               Container(
-                margin: EdgeInsets.only(top: _animation.value, left: 30),
+                margin: EdgeInsets.only(top: _animation.value, left: 60),
                 child: Column(
                   children: [
-                    //Email Textfield.
-                    Textfield(
-                      label: 'Email',
-                      hint: 'Enter your email',
-                      icon: Icons.email,
-                      hideText: false,
-                      email: true,
-                      controller: email,
-                      focusNode: _focusNodeEmail,
-                    ),
-
-                    ///****************************************************************************/
-                    //User name Textfield.
-                    Textfield(
-                      label: 'User Name',
-                      hint: 'Enter your user name',
-                      icon: Icons.vpn_key,
-                      hideText: false,
-                      email: false,
-                      controller: userName,
-                      focusNode: _focusNodeuserName,
-                    ),
-
-                    ///****************************************************************************/
-                    //Password Textfield.
-                    Textfield(
-                      label: 'Password',
-                      hint: 'Enter your password',
-                      icon: Icons.vpn_key,
-                      hideText: true,
-                      email: false,
-                      controller: password,
-                      focusNode: _focusNodePassword,
-                    ),
-                  ],
-                ),
-              ),
-              Container(
-                margin: EdgeInsets.only(top: 490, left: 80),
-                child: Column(
-                  children: [
-                    ButtonTheme(
-                      minWidth: 120,
-                      height: 40,
-                      child: RaisedButton(
-                        onPressed: () => signUpAction(context),
-                        child: Text(
-                          'Sign Up',
-                          style: TextStyle(
-                            fontFamily: 'Futura PT',
-                            fontSize: 22,
-                            color: maincolor,
-                            fontWeight: FontWeight.bold,
+                    //Container to hold 'email', 'user name'&'password' text fields
+                    Container(
+                      padding: EdgeInsets.only(top: 10),
+                      child: Column(
+                        children: [
+                          //Email Textfield.
+                          Textfield(
+                            label: 'Email',
+                            hint: 'Enter your email',
+                            icon: Icons.email,
+                            hideText: false,
+                            email: true,
+                            controller: email,
+                            focusNode: _focusNodeEmail,
                           ),
-                        ),
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(40)),
-                        color: fontcolor,
+
+                          ///****************************************************************************/
+                          //User name Textfield.
+                          Textfield(
+                            label: 'User Name',
+                            hint: 'Enter your user name',
+                            icon: Icons.account_circle,
+                            hideText: false,
+                            email: false,
+                            controller: userName,
+                            focusNode: _focusNodeuserName,
+                          ),
+
+                          ///****************************************************************************/
+                          //Password Textfield.
+                          Textfield(
+                            label: 'Password',
+                            hint: 'Enter your password',
+                            icon: Icons.vpn_key,
+                            hideText: true,
+                            email: false,
+                            controller: password,
+                            focusNode: _focusNodePassword,
+                          ),
+                        ],
                       ),
                     ),
-                    FlatButton(
-                      onPressed: () {
-                        Router().navigator(context, LogIn());
-                      },
-                      child: Text(
-                        'Already have account?',
-                        style: TextStyle(
-                          fontFamily: 'Futura PT',
-                          fontSize: 18,
-                          color: fontcolor,
-                        ),
-                        textAlign: TextAlign.center,
+                    //Container to hold 'Sign Up'&'Already have account?' buttons.
+                    Container(
+                      margin: EdgeInsets.only(top: 20, left: 20),
+                      child: Column(
+                        children: [
+                          ButtonTheme(
+                            minWidth: 120,
+                            height: 40,
+                            child: RaisedButton(
+                              onPressed: () => signUpAction(context),
+                              child: Text(
+                                'Sign Up',
+                                style: TextStyle(
+                                  fontFamily: 'Futura PT',
+                                  fontSize: 22,
+                                  color: maincolor,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(40)),
+                              color: fontcolor,
+                            ),
+                          ),
+                          FlatButton(
+                            onPressed: () {
+                              Router().navigator(context, LogIn());
+                            },
+                            child: Text(
+                              'Already have account?',
+                              style: TextStyle(
+                                fontFamily: 'Futura PT',
+                                fontSize: 18,
+                                color: fontcolor,
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ],
@@ -210,6 +227,7 @@ class _State extends State<SigUp> with SingleTickerProviderStateMixin {
     );
   }
 
+  ///**********************************BACK END************************************
   Future<bool> _onWillPop() {
     SystemNavigator.pop();
   }
@@ -226,27 +244,39 @@ class _State extends State<SigUp> with SingleTickerProviderStateMixin {
   }
 
   ///**********************************************************************
-//Method disposePassword to remove the password controller from tree.
+  //Method disposePassword to remove the password controller from tree.
   void disposePassword() {
     password.dispose();
   }
 
   ///**********************************************************************
-//Method disposePassword to remove the password controller from tree.
+  //Method disposePassword to remove the password controller from tree.
   void disposeuserName() {
     userName.dispose();
   }
 
   ///**********************************************************************
 
+  //Method 'signUpAction' triggered when the Sign up button is pressed.
   void signUpAction(BuildContext context) async {
-    if (email.text.isEmpty) {
+    //Check if there is internet connection or not and display message error if not.
+    var connectivityResult = await (Connectivity().checkConnectivity());
+    if (connectivityResult == ConnectivityResult.none) {
+      Warning().errorMessage(context,
+          title: "No internet connection !",
+          message: "Pleas turn on wifi or mobile data",
+          icons: Icons.signal_wifi_off);
+
+      //Validate 'email' text field to make sure it's not empty.
+    } else if (email.text.isEmpty) {
       Warning().errorMessage(
         context,
         title: "Email field can't be empty !",
         message: 'Please enter your email.',
         icons: Icons.warning,
       );
+
+      //Validate 'email' text field to make sure it contains '@'.
     } else if (!email.text.contains('@')) {
       Warning().errorMessage(
         context,
@@ -257,6 +287,8 @@ class _State extends State<SigUp> with SingleTickerProviderStateMixin {
       email.clear();
       password.clear();
       userName.clear();
+
+      //Validate 'email' text field to make sure it contains '.com'.
     } else if (!email.text.contains('.com')) {
       Warning().errorMessage(
         context,
@@ -267,6 +299,8 @@ class _State extends State<SigUp> with SingleTickerProviderStateMixin {
       email.clear();
       password.clear();
       userName.clear();
+
+      //Validate 'password' text field to make sure it's not empty.
     } else if (password.text.isEmpty) {
       Warning().errorMessage(
         context,
@@ -275,6 +309,8 @@ class _State extends State<SigUp> with SingleTickerProviderStateMixin {
         icons: Icons.warning,
       );
       email.clear();
+
+      //Validate 'password' text field to make sure it's more than 6 characters in length.
     } else if (password.text.length < 6) {
       Warning().errorMessage(
         context,
@@ -285,10 +321,14 @@ class _State extends State<SigUp> with SingleTickerProviderStateMixin {
       email.clear();
       userName.clear();
       password.clear();
+
+      //Routing the user to 'Home Screen' and display loading spinner while routing.
     } else {
       setState(() {
         showSpinner = true;
       });
+
+      //Create new user with firebase using 'createUserWithEmailAndPassword' method.
       try {
         final newUser = await auth.createUserWithEmailAndPassword(
             email: email.text, password: password.text);
