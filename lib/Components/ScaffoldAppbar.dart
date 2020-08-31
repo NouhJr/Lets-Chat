@@ -29,7 +29,7 @@ class _State extends State<ScaffoldAppbar> {
   String currentuserEmail = '';
   String biography = '';
   String url =
-      "https://firebasestorage.googleapis.com/v0/b/lets-chat-fbd0f.appspot.com/o/NoUser.jpg?alt=media&token=af77c942-d282-400f-8be3-aaa370928cbd";
+      "https://firebasestorage.googleapis.com/v0/b/lets-chat-fbd0f.appspot.com/o/NoUser.jpg?alt=media&token=bbe8c9eb-9439-4fc2-9b5e-ef41a6aafff7";
 
   @override
   void initState() {
@@ -128,7 +128,12 @@ class _State extends State<ScaffoldAppbar> {
                 icon: Icons.home,
                 iconColor: maincolor,
                 OnPress: () {
-                  Router().navigator(context, Home_Screen());
+                  Router().navigator(
+                      context,
+                      Home_Screen(
+                        user: currentuser,
+                        picture: url,
+                      ));
                 },
               ),
 

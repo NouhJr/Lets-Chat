@@ -338,7 +338,7 @@ class _State extends State<SigUp> with SingleTickerProviderStateMixin {
             .setData({
           'username': userName.text,
           'picture':
-              'https://firebasestorage.googleapis.com/v0/b/lets-chat-fbd0f.appspot.com/o/NoUser.jpg?alt=media&token=af77c942-d282-400f-8be3-aaa370928cbd',
+              'https://firebasestorage.googleapis.com/v0/b/lets-chat-fbd0f.appspot.com/o/NoUser.jpg?alt=media&token=bbe8c9eb-9439-4fc2-9b5e-ef41a6aafff7',
           'bio': '',
         });
         SharedPreferences prefs = await SharedPreferences.getInstance();
