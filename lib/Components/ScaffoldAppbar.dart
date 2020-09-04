@@ -12,15 +12,18 @@ import 'package:lets_chat/Screens/Account.dart';
 import 'package:lets_chat/Screens/Home_Screen.dart';
 
 class ScaffoldAppbar extends StatefulWidget {
-  ScaffoldAppbar({@required this.body});
+  ScaffoldAppbar({@required this.body, this.floatingActionButton});
   final Widget body;
+  final Widget floatingActionButton;
   @override
-  _State createState() => _State(body: body);
+  _State createState() =>
+      _State(body: body, floatingActionButton: floatingActionButton);
 }
 
 class _State extends State<ScaffoldAppbar> {
-  _State({@required this.body});
+  _State({@required this.body, this.floatingActionButton});
   final Widget body;
+  final Widget floatingActionButton;
   final _auth = FirebaseAuth.instance;
   final fireStore = Firestore.instance;
   DocumentReference doc;
@@ -46,8 +49,10 @@ class _State extends State<ScaffoldAppbar> {
         setState(() {
           currentuserEmail = newUser.email;
         });
-        final doc =
-            await fireStore.collection('users').document(user.uid).get();
+        final doc = await fireStore
+            .collection('users')
+            .document(currentuserEmail)
+            .get();
         String loggedUserName = doc['username'];
         String imageUrl = doc['picture'];
         String biofromDB = doc['bio'];
@@ -165,6 +170,7 @@ class _State extends State<ScaffoldAppbar> {
         ),
       ),
       body: body,
+      floatingActionButton: floatingActionButton,
     );
   }
 

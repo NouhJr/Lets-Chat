@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:lets_chat/Components/ScaffoldAppbar.dart';
 import 'package:lets_chat/Components/Constants.dart';
 import 'package:lets_chat/Components/Navigator.dart';
+import 'package:lets_chat/Screens/CreateChatRoom.dart';
 import 'package:lets_chat/Screens/ChatScreen.dart';
 
 class Home_Screen extends StatefulWidget {
@@ -26,6 +28,7 @@ class _Home_ScreenState extends State<Home_Screen> {
   final fireStore = Firestore.instance;
   DocumentReference doc;
   String currentuser = '';
+  String currentUserEmail = '';
   String image =
       "https://firebasestorage.googleapis.com/v0/b/lets-chat-fbd0f.appspot.com/o/NoUser.jpg?alt=media&token=bbe8c9eb-9439-4fc2-9b5e-ef41a6aafff7";
 
@@ -40,13 +43,15 @@ class _Home_ScreenState extends State<Home_Screen> {
     try {
       final user = await _auth.currentUser();
       if (user != null) {
+        String email = user.email;
         final doc =
-            await fireStore.collection('users').document(user.uid).get();
+            await fireStore.collection('users').document(user.email).get();
         String loggedUserName = doc['username'];
         String imageUrl = doc['picture'];
         setState(() {
           currentuser = loggedUserName;
           image = imageUrl;
+          currentUserEmail = email;
         });
       }
     } catch (e) {
@@ -60,34 +65,23 @@ class _Home_ScreenState extends State<Home_Screen> {
     return WillPopScope(
       child: ScaffoldAppbar(
         //Lis view to display chats.
-        body: ListView(
-          children: [
-            //Container to hold each chat.
-            Container(
-              margin: EdgeInsets.only(top: 10, left: 5, right: 5),
-              padding: EdgeInsets.all(5),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(15),
-                color: maincolor,
-              ),
-              child: ListTile(
-                leading: CircleAvatar(
-                  backgroundImage: NetworkImage(image),
-                  radius: 30.0,
-                ),
-                title: Text(
-                  currentuser,
-                  style: TextStyle(
-                    fontFamily: 'Futura PT',
-                    fontSize: 28,
-                    color: fontcolor,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-                onTap: toChatScreen,
-              ),
-            ),
-          ],
+        body: Container(),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            Router().navigator(
+                context,
+                ChatRoom(
+                  currentUser: currentuser,
+                  loggedUserEmail: currentUserEmail,
+                  currentUserPicture: image,
+                ));
+          },
+          backgroundColor: maincolor,
+          elevation: 1.0,
+          child: Icon(
+            Icons.add_comment,
+            size: 35.0,
+          ),
         ),
       ),
       onWillPop: _onWillPop,

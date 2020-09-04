@@ -115,10 +115,14 @@ class _EditbioState extends State<Editbio> {
       try {
         final user = await _auth.currentUser();
         if (user != null) {
-          await fireStore.collection('users').document(user.uid).updateData({
+          await fireStore.collection('users').document(user.email).updateData({
             'bio': bio.text,
           });
         }
+        Warning().errorMessage(context,
+            title: "Biography updated !",
+            message: "updated successfully",
+            icons: Icons.done);
       } catch (e) {
         Warning().errorMessage(context,
             title: "unable to update bio !",

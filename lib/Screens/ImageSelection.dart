@@ -106,7 +106,7 @@ class SelectionState extends State<Selection> {
       try {
         final user = await _auth.currentUser();
         if (user != null) {
-          await fireStore.collection('users').document(user.uid).updateData({
+          await fireStore.collection('users').document(user.email).updateData({
             'picture': uploadedImageUrl,
           });
         }

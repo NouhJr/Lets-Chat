@@ -334,12 +334,24 @@ class _State extends State<SigUp> with SingleTickerProviderStateMixin {
             email: email.text, password: password.text);
         await Firestore.instance
             .collection('users')
-            .document(newUser.user.uid)
+            .document(email.text)
             .setData({
           'username': userName.text,
           'picture':
               'https://firebasestorage.googleapis.com/v0/b/lets-chat-fbd0f.appspot.com/o/NoUser.jpg?alt=media&token=bbe8c9eb-9439-4fc2-9b5e-ef41a6aafff7',
           'bio': '',
+        });
+        await Firestore.instance
+            .collection('users')
+            .document(email.text)
+            .collection('Chat Rooms')
+            .document('dummy doc')
+            .setData({
+          'sender': '',
+          'recevier': '',
+          'senderPicture': '',
+          'recevierPicture': '',
+          'roomID': '',
         });
         SharedPreferences prefs = await SharedPreferences.getInstance();
         prefs.setString('email', email.text);
