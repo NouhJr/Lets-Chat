@@ -6,6 +6,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:connectivity/connectivity.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:lets_chat/Components/ScaffoldAppbar.dart';
 import 'package:lets_chat/Components/Constants.dart';
 import 'package:lets_chat/Components/FlushBar.dart';
@@ -26,7 +27,7 @@ class SelectionState extends State<Selection> {
   final fireStore = Firestore.instance;
   String id;
   var uploadedImageUrl;
-  DocumentReference doc;
+  DocumentReference roomDoc;
 
   @override
   Widget build(BuildContext context) {
@@ -104,11 +105,36 @@ class SelectionState extends State<Selection> {
       await uploadTask.onComplete;
       uploadedImageUrl = await storageReference.getDownloadURL() as String;
       try {
+        //getting logged user name from Shared Preferences.
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        var loggedInUserEmail = prefs.getString('email');
+        var loggedUserRoomIDS = prefs.getStringList('LoggedUserRoomsIDs');
+        var loggedUserName = prefs.getString('LoggedUser');
+
         final user = await _auth.currentUser();
         if (user != null) {
-          await fireStore.collection('users').document(user.email).updateData({
+          await fireStore
+              .collection('users')
+              .document(loggedInUserEmail)
+              .updateData({
             'picture': uploadedImageUrl,
           });
+        }
+
+        for (var id in loggedUserRoomIDS) {
+          final roomDoc =
+              await fireStore.collection('Chat Rooms').document(id).get();
+          String sender = roomDoc['sender'];
+          String recevier = roomDoc['recevier'];
+          if (loggedUserName == sender) {
+            await fireStore.collection('Chat Rooms').document(id).updateData({
+              'senderPicture': uploadedImageUrl,
+            });
+          } else if (loggedUserName == recevier) {
+            await fireStore.collection('Chat Rooms').document(id).updateData({
+              'recevierPicture': uploadedImageUrl,
+            });
+          }
         }
         Warning().errorMessage(context,
             title: "Profile picture changed !",
@@ -119,6 +145,7 @@ class SelectionState extends State<Selection> {
             title: "Something went wrong !",
             message: "Try again later",
             icons: Icons.error);
+        print(e.toString());
       }
       setState(() {
         showSpinner = false;

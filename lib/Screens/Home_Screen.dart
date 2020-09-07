@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:lets_chat/Streams/ChatRoomsStream.dart';
 import 'package:lets_chat/Components/ScaffoldAppbar.dart';
 import 'package:lets_chat/Components/Constants.dart';
 import 'package:lets_chat/Components/Navigator.dart';
 import 'package:lets_chat/Screens/CreateChatRoom.dart';
-import 'package:lets_chat/Screens/ChatScreen.dart';
 
 class Home_Screen extends StatefulWidget {
   Home_Screen({this.user, this.picture});
@@ -32,6 +32,8 @@ class _Home_ScreenState extends State<Home_Screen> {
   String image =
       "https://firebasestorage.googleapis.com/v0/b/lets-chat-fbd0f.appspot.com/o/NoUser.jpg?alt=media&token=bbe8c9eb-9439-4fc2-9b5e-ef41a6aafff7";
 
+  int index = -1;
+  List<dynamic> loggedUserRoomsIDs = [];
   @override
   void initState() {
     getUserData();
@@ -48,11 +50,22 @@ class _Home_ScreenState extends State<Home_Screen> {
             await fireStore.collection('users').document(user.email).get();
         String loggedUserName = doc['username'];
         String imageUrl = doc['picture'];
+        int indexFromDoc = doc['RoomsIndex'];
+        List<dynamic> loggedUserRoomsIDsFromDoc = doc['chatRoomsIDS'];
         setState(() {
           currentuser = loggedUserName;
           image = imageUrl;
           currentUserEmail = email;
+          index = indexFromDoc;
+          loggedUserRoomsIDs = loggedUserRoomsIDsFromDoc;
         });
+
+        //saving index of chat rooms from logged user collection locally in Shared Preferences.
+        SharedPreferences savePrefs = await SharedPreferences.getInstance();
+        savePrefs.setString('LoggedUser', currentuser);
+        savePrefs.setInt('LoggedUserRoomsIndex', index);
+        savePrefs.setStringList(
+            'LoggedUserRoomsIDs', loggedUserRoomsIDs.cast<String>());
       }
     } catch (e) {
       print(e);
@@ -65,7 +78,7 @@ class _Home_ScreenState extends State<Home_Screen> {
     return WillPopScope(
       child: ScaffoldAppbar(
         //Lis view to display chats.
-        body: Container(),
+        body: Room(),
         floatingActionButton: FloatingActionButton(
           onPressed: () {
             Router().navigator(
@@ -91,11 +104,5 @@ class _Home_ScreenState extends State<Home_Screen> {
   ///*********************************BACK END***********************************
   Future<bool> _onWillPop() {
     SystemNavigator.pop();
-  }
-
-  //Method 'toChatScreen' to navigate the user to chat screen when he tap on list tile.
-  void toChatScreen() {
-    Router().navigator(
-        context, ChatScreen(userName: currentuser, userImage: image));
   }
 }

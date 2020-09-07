@@ -2,30 +2,23 @@ import 'package:flutter/material.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:lets_chat/Components/ScaffoldAppbar.dart';
 import 'package:lets_chat/Components/Constants.dart';
 import 'package:lets_chat/Components/FlushBar.dart';
 import 'package:lets_chat/Components/Navigator.dart';
-import 'Home_Screen.dart';
 import 'package:lets_chat/Screens/CreateChatRoom.dart';
+import 'package:lets_chat/Screens/ChatScreen.dart';
 
 class RecevierProfile extends StatefulWidget {
   RecevierProfile(
-      {this.user,
-      this.picture,
-      this.bio,
-      this.senderUser,
-      this.senderEmail,
-      this.userEmail,
-      this.senderPicture});
+      {this.user, this.picture, this.bio, this.senderUser, this.senderPicture});
 
   final String user;
-  final String userEmail;
   final String picture;
   final String bio;
 
   final String senderUser;
-  final String senderEmail;
   final String senderPicture;
 
   @override
@@ -34,8 +27,6 @@ class RecevierProfile extends StatefulWidget {
         userPicture: picture,
         userBio: bio,
         loggedUser: senderUser,
-        loggedEmail: senderEmail,
-        recevierEmail: userEmail,
         loggedPicture: senderPicture,
       );
 }
@@ -46,18 +37,17 @@ class _RecevierProfileState extends State<RecevierProfile> {
       this.userPicture,
       this.userBio,
       this.loggedUser,
-      this.loggedEmail,
-      this.recevierEmail,
       this.loggedPicture});
 
   final String userName;
-  final String recevierEmail;
   final String userPicture;
   final String userBio;
 
   final String loggedUser;
-  final String loggedEmail;
   final String loggedPicture;
+
+  DocumentReference doc;
+  final fireStore = Firestore.instance;
 
   @override
   Widget build(BuildContext context) {
@@ -179,35 +169,51 @@ class _RecevierProfileState extends State<RecevierProfile> {
         showSpinner = true;
       });
       try {
-        //Creating Chat room in recevier's firebase doc.
-        await Firestore.instance
-            .collection('users')
-            .document(recevierEmail)
-            .collection('Chat Rooms')
-            .document(userName + '&' + loggedUser + ' Room')
-            .setData({
+        //Creating 'Chat room' collection in firebase.
+        final doc = Firestore.instance.collection('Chat Rooms').document();
+        doc.setData({
           'sender': loggedUser,
           'recevier': userName,
           'senderPicture': loggedPicture,
           'recevierPicture': userPicture,
-          'roomID': userName + '&' + loggedUser,
         });
 
-        //Creating Chat room in sender's firebase doc.
-        await Firestore.instance
-            .collection('users')
-            .document(loggedEmail)
-            .collection('Chat Rooms')
-            .document(loggedUser + '&' + userName + ' Room')
-            .setData({
-          'sender': loggedUser,
-          'recevier': userName,
-          'senderPicture': loggedPicture,
-          'recevierPicture': userPicture,
-          'roomID': userName + '&' + loggedUser,
+        //saving doc id into variable.
+        String id = doc.documentID;
+
+        //Create instance of Shared Preferences.
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+
+        //getting sender&recevier rooms indices from Shared Preferences.
+        var senderRoomsIndex = prefs.getInt('LoggedUserRoomsIndex');
+        var recevierRoomsIndex = prefs.getInt('RecevierRoomsIndex');
+
+        //getting sender&recevier chat rooms ids from Shared Preferences.
+        var senderChatRooms = prefs.getStringList('LoggedUserRoomsIDs');
+        var recevierChatRooms = prefs.getStringList('RecevierRoomsIDs');
+
+        //getting sender&recevier emails from Shared Preferences.
+        var senderEmail = prefs.getString('email');
+        var recevierEmail = prefs.getString('RecevierEmail');
+
+        //Updating sender&recevier chat rooms list.
+        senderChatRooms.insert(senderRoomsIndex + 1, id);
+        recevierChatRooms.insert(recevierRoomsIndex + 1, id);
+
+        //Updating sender chat room ids in firestore.
+        await fireStore.collection('users').document(senderEmail).updateData({
+          'RoomsIndex': senderRoomsIndex + 1,
+          'chatRoomsIDS': senderChatRooms.cast<dynamic>(),
         });
 
-        Router().navigator(context, Home_Screen());
+        //Updating recevier chat room ids in firestore.
+        await fireStore.collection('users').document(recevierEmail).updateData({
+          'RoomsIndex': recevierRoomsIndex + 1,
+          'chatRoomsIDS': recevierChatRooms.cast<dynamic>(),
+        });
+
+        Router().navigator(
+            context, ChatScreen(userName: userName, userImage: userPicture));
         setState(() {
           showSpinner = false;
         });

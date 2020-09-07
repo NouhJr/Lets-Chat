@@ -49,6 +49,7 @@ class _State extends State<ScaffoldAppbar> {
         setState(() {
           currentuserEmail = newUser.email;
         });
+
         final doc = await fireStore
             .collection('users')
             .document(currentuserEmail)
@@ -71,9 +72,10 @@ class _State extends State<ScaffoldAppbar> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: subMainColor,
       appBar: AppBar(
         backgroundColor: maincolor,
-        elevation: 0.1,
+        elevation: 2.0,
         title: Text(
           'Lets Chat',
           style: TextStyle(

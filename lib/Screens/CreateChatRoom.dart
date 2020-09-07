@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:lets_chat/Components/Constants.dart';
 import 'package:lets_chat/Components/Navigator.dart';
 import 'package:lets_chat/Components/FlushBar.dart';
@@ -43,7 +44,7 @@ class _ChatRoomState extends State<ChatRoom> {
                 borderRadius: BorderRadius.circular(40),
               ),
               child:
-                  //User's email text field.
+                  //User's user name text field.
                   TextField(
                 style: TextStyle(
                   fontSize: 18,
@@ -70,7 +71,7 @@ class _ChatRoomState extends State<ChatRoom> {
                 ),
                 keyboardType: TextInputType.emailAddress,
                 cursorColor: Colors.grey,
-                controller: email,
+                controller: user,
               ),
             ),
 
@@ -103,16 +104,18 @@ class _ChatRoomState extends State<ChatRoom> {
     );
   }
 
-  final email = TextEditingController();
+  final user = TextEditingController();
   final fireStore = Firestore.instance;
   bool showSpinner = false;
   String receiverUserName = '';
   String receiverPicture =
       "https://firebasestorage.googleapis.com/v0/b/lets-chat-fbd0f.appspot.com/o/NoUser.jpg?alt=media&token=bbe8c9eb-9439-4fc2-9b5e-ef41a6aafff7";
   String receiverBio = '';
+  int recevierRoomsIndex = -1;
+  List<dynamic> recevierRoomsIDs = [];
 
   void disposeEmail() {
-    email.dispose();
+    user.dispose();
   }
 
   void nextButtonAction() async {
@@ -124,46 +127,65 @@ class _ChatRoomState extends State<ChatRoom> {
           message: "Pleas turn on wifi or mobile data",
           icons: Icons.signal_wifi_off);
       //Validate 'email' text field to make sure it's not empty.
-    } else if (email.text.isEmpty) {
+    } else if (user.text.isEmpty) {
       Warning().errorMessage(
         context,
         title: "Email field can't be empty !",
-        message: 'Please enter your email.',
+        message: 'Please enter an email.',
         icons: Icons.warning,
       );
       //Validate 'email' text field to make sure it contains '@'.
-    } else if (!email.text.contains('@')) {
+    } else if (!user.text.contains('@')) {
       Warning().errorMessage(
         context,
         title: 'Invalid email !',
         message: "Email must contain '@' ",
         icons: Icons.warning,
       );
-      email.clear();
+      user.clear();
+
       //Validate 'email' text field to make sure it contains '.com'.
-    } else if (!email.text.contains('.com')) {
+    } else if (!user.text.contains('.com')) {
       Warning().errorMessage(
         context,
         title: 'Invalid email !',
         message: "Email must contain '.com' ",
         icons: Icons.warning,
       );
-      email.clear();
+      user.clear();
     } else {
       setState(() {
         showSpinner = true;
       });
       try {
+        //Saving recevier user name locally in Shared Preferences.
+        SharedPreferences savePrefs = await SharedPreferences.getInstance();
+        savePrefs.setString('RecevierEmail', user.text);
+
+        //getting recevier user name from Shared Preferences.
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        var recevierEmail = prefs.getString('RecevierEmail');
+
         final doc =
-            await fireStore.collection('users').document(email.text).get();
+            await fireStore.collection('users').document(recevierEmail).get();
         String userName = doc['username'];
         String imageUrl = doc['picture'];
         String biofromDB = doc['bio'];
+        int recevierRoomsIndexFromDoc = doc['RoomsIndex'];
+        List<dynamic> recevierRoomsIDsFromDoc = doc['chatRoomsIDS'];
         setState(() {
           receiverUserName = userName;
           receiverPicture = imageUrl;
           receiverBio = biofromDB;
+          recevierRoomsIndex = recevierRoomsIndexFromDoc;
+          recevierRoomsIDs = recevierRoomsIDsFromDoc;
         });
+
+        //saving index of chat rooms from recevier user collection locally in Shared Preferences.
+        savePrefs.setInt('RecevierRoomsIndex', recevierRoomsIndex);
+        savePrefs.setStringList(
+            'RecevierRoomsIDs', recevierRoomsIDs.cast<String>());
+
         Router().navigator(
             context,
             RecevierProfile(
@@ -171,16 +193,15 @@ class _ChatRoomState extends State<ChatRoom> {
               senderUser: sender,
               picture: receiverPicture,
               bio: receiverBio,
-              senderEmail: senderEmail,
-              userEmail: email.text,
               senderPicture: senderImage,
             ));
-        email.clear();
+        user.clear();
       } catch (e) {
         setState(() {
           showSpinner = false;
         });
-        email.clear();
+        user.clear();
+        print(e.toString());
         Warning().errorMessage(
           context,
           title: "Unable to get user's info !",

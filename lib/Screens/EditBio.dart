@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:lets_chat/Components/ScaffoldAppbar.dart';
 import 'package:lets_chat/Components/Constants.dart';
 import 'package:lets_chat/Components/FlushBar.dart';
@@ -113,9 +114,16 @@ class _EditbioState extends State<Editbio> {
         showSpinner = true;
       });
       try {
+        //getting logged user name from Shared Preferences.
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        var loggedInUserEmail = prefs.getString('email');
+
         final user = await _auth.currentUser();
         if (user != null) {
-          await fireStore.collection('users').document(user.email).updateData({
+          await fireStore
+              .collection('users')
+              .document(loggedInUserEmail)
+              .updateData({
             'bio': bio.text,
           });
         }

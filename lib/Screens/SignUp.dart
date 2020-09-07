@@ -237,6 +237,7 @@ class _State extends State<SigUp> with SingleTickerProviderStateMixin {
   final userName = TextEditingController();
   final auth = FirebaseAuth.instance;
   bool showSpinner = false;
+  List<String> chatRooms = [];
 
 //Method disposeEmail to remove the email controller from tree.
   void disposeEmail() {
@@ -340,21 +341,14 @@ class _State extends State<SigUp> with SingleTickerProviderStateMixin {
           'picture':
               'https://firebasestorage.googleapis.com/v0/b/lets-chat-fbd0f.appspot.com/o/NoUser.jpg?alt=media&token=bbe8c9eb-9439-4fc2-9b5e-ef41a6aafff7',
           'bio': '',
+          'RoomsIndex': -1,
+          'chatRoomsIDS': chatRooms,
         });
-        await Firestore.instance
-            .collection('users')
-            .document(email.text)
-            .collection('Chat Rooms')
-            .document('dummy doc')
-            .setData({
-          'sender': '',
-          'recevier': '',
-          'senderPicture': '',
-          'recevierPicture': '',
-          'roomID': '',
-        });
+
+        //Saving user email & user name locally in Shared Preferences.
         SharedPreferences prefs = await SharedPreferences.getInstance();
         prefs.setString('email', email.text);
+
         if (newUser != null) {
           Router().navigator(context, Home_Screen());
         }
