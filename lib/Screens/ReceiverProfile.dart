@@ -134,7 +134,7 @@ class _RecevierProfileState extends State<RecevierProfile> {
                 child: RaisedButton(
                   onPressed: action,
                   child: Text(
-                    'Next',
+                    'Message',
                     style: TextStyle(
                       fontFamily: 'Futura PT',
                       fontSize: 22,

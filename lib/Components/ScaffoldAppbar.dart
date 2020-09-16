@@ -7,6 +7,7 @@ import 'package:lets_chat/Components/Constants.dart';
 import 'package:lets_chat/Components/FlushBar.dart';
 import 'Reuseable_Inkwell.dart';
 import 'Navigator.dart';
+import 'package:lets_chat/Streams/SearchedUserStream.dart';
 import 'package:lets_chat/Screens/Main_Screen.dart';
 import 'package:lets_chat/Screens/Account.dart';
 import 'package:lets_chat/Screens/Home_Screen.dart';
@@ -91,6 +92,19 @@ class _State extends State<ScaffoldAppbar> {
         ),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         centerTitle: true,
+        actions: [
+          IconButton(
+            icon: Icon(Icons.search),
+            onPressed: () {
+              showSearch(
+                context: context,
+                delegate: Search(),
+              );
+            },
+            iconSize: 35.0,
+            padding: EdgeInsets.only(right: 25),
+          ),
+        ],
       ),
       drawer: Drawer(
         child: Container(
@@ -191,5 +205,42 @@ class _State extends State<ScaffoldAppbar> {
       prefs.remove('email');
       Router().navigator(context, Main_Screen());
     }
+  }
+}
+
+class Search extends SearchDelegate<String> {
+  @override
+  List<Widget> buildActions(BuildContext context) {
+    return [
+      IconButton(
+        icon: Icon(Icons.clear),
+        onPressed: () {
+          query = "";
+        },
+      ),
+    ];
+  }
+
+  @override
+  Widget buildLeading(BuildContext context) {
+    return IconButton(
+      icon: AnimatedIcon(
+          icon: AnimatedIcons.menu_arrow, progress: transitionAnimation),
+      onPressed: () {
+        close(context, null);
+      },
+    );
+  }
+
+  @override
+  Widget buildResults(BuildContext context) {
+    return SearchedUsers(
+      query: query,
+    );
+  }
+
+  @override
+  Widget buildSuggestions(BuildContext context) {
+    return Container();
   }
 }
