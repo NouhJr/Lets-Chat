@@ -11,12 +11,19 @@ import 'package:lets_chat/Screens/CreateChatRoom.dart';
 import 'package:lets_chat/Screens/ChatScreen.dart';
 
 class RecevierProfile extends StatefulWidget {
-  RecevierProfile(
-      {this.user, this.picture, this.bio, this.senderUser, this.senderPicture});
+  RecevierProfile({
+    this.user,
+    this.picture,
+    this.bio,
+    this.senderUser,
+    this.senderPicture,
+    this.email,
+  });
 
   final String user;
   final String picture;
   final String bio;
+  final String email;
 
   final String senderUser;
   final String senderPicture;
@@ -28,6 +35,7 @@ class RecevierProfile extends StatefulWidget {
         userBio: bio,
         loggedUser: senderUser,
         loggedPicture: senderPicture,
+        userEmail: email,
       );
 }
 
@@ -37,11 +45,13 @@ class _RecevierProfileState extends State<RecevierProfile> {
       this.userPicture,
       this.userBio,
       this.loggedUser,
-      this.loggedPicture});
+      this.loggedPicture,
+      this.userEmail});
 
   final String userName;
   final String userPicture;
   final String userBio;
+  final String userEmail;
 
   final String loggedUser;
   final String loggedPicture;
@@ -84,12 +94,30 @@ class _RecevierProfileState extends State<RecevierProfile> {
 
             //Username container.
             Container(
-              margin: EdgeInsets.only(top: 260, left: 130),
+              margin: EdgeInsets.only(bottom: 160),
+              child: Center(
+                child: Text(
+                  userName,
+                  style: TextStyle(
+                    fontFamily: 'Futura PT',
+                    fontSize: 28,
+                    color: Color(0xf0000000),
+                    fontWeight: FontWeight.bold,
+                    fontStyle: FontStyle.italic,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            ),
+
+            //Email label container.
+            Container(
+              margin: EdgeInsets.only(top: 350, left: 10),
               child: Text(
-                userName,
+                'Email:',
                 style: TextStyle(
                   fontFamily: 'Futura PT',
-                  fontSize: 28,
+                  fontSize: 25,
                   color: Color(0xf0000000),
                   fontWeight: FontWeight.bold,
                 ),
@@ -97,9 +125,24 @@ class _RecevierProfileState extends State<RecevierProfile> {
               ),
             ),
 
+            //Email Content container.
+            Container(
+              margin: EdgeInsets.only(top: 353, left: 90),
+              child: Text(
+                userEmail,
+                style: TextStyle(
+                  fontFamily: 'Futura PT',
+                  fontSize: 21,
+                  color: Color(0xf0000000),
+                  fontWeight: FontWeight.w700,
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ),
+
             //Bio label container.
             Container(
-              margin: EdgeInsets.only(top: 395, left: 10),
+              margin: EdgeInsets.only(top: 435, left: 10),
               child: Text(
                 'Biography:',
                 style: TextStyle(
@@ -113,7 +156,7 @@ class _RecevierProfileState extends State<RecevierProfile> {
 
             //Bio container.
             Container(
-              margin: EdgeInsets.only(top: 430, left: 10),
+              margin: EdgeInsets.only(top: 460, left: 10),
               child: Text(
                 userBio,
                 style: TextStyle(
@@ -125,9 +168,9 @@ class _RecevierProfileState extends State<RecevierProfile> {
               ),
             ),
 
-            //'Next' button container.
+            //'Message' button container.
             Container(
-              margin: EdgeInsets.only(top: 590, left: 160),
+              margin: EdgeInsets.only(top: 640, left: 160),
               child: ButtonTheme(
                 height: 40,
                 minWidth: 100,
@@ -144,7 +187,7 @@ class _RecevierProfileState extends State<RecevierProfile> {
                   ),
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(40)),
-                  color: maincolor,
+                  color: subMainColor,
                 ),
               ),
             ),

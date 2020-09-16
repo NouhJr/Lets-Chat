@@ -66,7 +66,7 @@ class _State extends State<LogIn> with SingleTickerProviderStateMixin {
   Widget build(BuildContext context) {
     return WillPopScope(
       child: Scaffold(
-        backgroundColor: maincolor,
+        backgroundColor: subMainColor,
         body: ModalProgressHUD(
           inAsyncCall: showSpinner,
           child: Stack(
@@ -168,7 +168,7 @@ class _State extends State<LogIn> with SingleTickerProviderStateMixin {
                                 style: TextStyle(
                                   fontFamily: 'Futura PT',
                                   fontSize: 22,
-                                  color: maincolor,
+                                  color: subMainColor,
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
@@ -199,7 +199,6 @@ class _State extends State<LogIn> with SingleTickerProviderStateMixin {
             ],
           ),
         ),
-        resizeToAvoidBottomPadding: false,
       ),
       onWillPop: _onWillPop,
     );

@@ -76,7 +76,7 @@ class _State extends State<SigUp> with SingleTickerProviderStateMixin {
   Widget build(BuildContext context) {
     return WillPopScope(
       child: Scaffold(
-        backgroundColor: const Color(0xff163c41),
+        backgroundColor: subMainColor,
         body: ModalProgressHUD(
           inAsyncCall: showSpinner,
           child: Stack(
@@ -189,7 +189,7 @@ class _State extends State<SigUp> with SingleTickerProviderStateMixin {
                                 style: TextStyle(
                                   fontFamily: 'Futura PT',
                                   fontSize: 22,
-                                  color: maincolor,
+                                  color: subMainColor,
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),

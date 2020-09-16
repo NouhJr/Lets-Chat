@@ -108,6 +108,7 @@ class _ChatScreenState extends State<ChatScreen>
               backgroundColor: maincolor,
               leading: CircleAvatar(
                 backgroundImage: NetworkImage(picture),
+                radius: 15,
               ),
               title: Text(
                 user,
@@ -124,7 +125,7 @@ class _ChatScreenState extends State<ChatScreen>
                 //Container to hold background image.
                 Container(
                   child: Image(
-                    image: AssetImage('assets/chatbackground.png'),
+                    image: AssetImage('assets/1288076.jpg'),
                     fit: BoxFit.fill,
                     width: 1080.0,
                   ),
@@ -162,7 +163,7 @@ class _ChatScreenState extends State<ChatScreen>
                             hintStyle: TextStyle(
                               fontSize: 18,
                               fontFamily: 'Futura PT',
-                              color: Colors.grey,
+                              color: fontcolor,
                             ),
                             fillColor: maincolor,
                             border: InputBorder.none,
@@ -175,7 +176,7 @@ class _ChatScreenState extends State<ChatScreen>
                               left: 10,
                             ),
                           ),
-                          cursorColor: Colors.grey,
+                          cursorColor: fontcolor,
                           focusNode: _focusNodeMessage,
                           controller: messageText,
                         ),
@@ -341,14 +342,16 @@ class MessageBubble extends StatelessWidget {
                 ? BorderRadius.all(Radius.circular(15.0))
                 : BorderRadius.all(Radius.circular(15.0)),
             elevation: 5.0,
-            color: isMe ? Colors.lightBlueAccent : Colors.white,
+            color: isMe ? Color(0xff163c41) : Colors.white,
             child: Padding(
               padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
               child: Text(
                 text,
                 style: TextStyle(
-                  color: isMe ? Colors.white : Colors.black54,
-                  fontSize: 15.0,
+                  color: isMe ? Colors.white : Colors.black,
+                  fontSize: 18.0,
+                  fontFamily: 'Futura PT',
+                  fontWeight: FontWeight.w500,
                 ),
               ),
             ),

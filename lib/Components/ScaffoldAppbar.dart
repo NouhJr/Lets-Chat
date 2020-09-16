@@ -73,7 +73,7 @@ class _State extends State<ScaffoldAppbar> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: subMainColor,
+      backgroundColor: fontcolor,
       appBar: AppBar(
         backgroundColor: maincolor,
         elevation: 2.0,
@@ -170,6 +170,7 @@ class _State extends State<ScaffoldAppbar> {
                         user: currentuser,
                         picture: url,
                         bio: biography,
+                        email: currentuserEmail,
                       ));
                 },
               ),

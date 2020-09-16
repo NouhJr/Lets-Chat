@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:connectivity/connectivity.dart';
-import 'package:lets_chat/Components/Constants.dart';
 import 'package:lets_chat/Components/Navigator.dart';
 import 'package:lets_chat/Components/FlushBar.dart';
 import 'package:lets_chat/Screens/ReceiverProfile.dart';
@@ -167,6 +166,7 @@ class _SearchedUserTilesState extends State<SearchedUserTiles> {
             context,
             RecevierProfile(
               user: receiverUserName,
+              email: searchedUserEmail,
               senderUser: sender,
               picture: receiverPicture,
               bio: receiverBio,

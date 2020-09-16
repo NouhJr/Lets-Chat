@@ -33,60 +33,59 @@ class SelectionState extends State<Selection> {
   Widget build(BuildContext context) {
     return Container(
       child: ScaffoldAppbar(
-        body: ModalProgressHUD(
-          inAsyncCall: showSpinner,
-          child: Center(
-            child: Column(
-              children: [
-                Container(
-                  margin: EdgeInsets.only(top: 15, bottom: 10),
-                  child: Text(
-                    'Selected image',
-                    style: TextStyle(
-                      fontFamily: 'Futura PT',
-                      fontSize: 22,
-                      color: Colors.black,
-                      fontWeight: FontWeight.bold,
-                    ),
+        body: Center(
+          child: Column(
+            children: [
+              //Container to hold 'Selected image' label.
+              Container(
+                margin: EdgeInsets.only(top: 15, bottom: 10),
+                child: Text(
+                  'Selected image',
+                  style: TextStyle(
+                    fontFamily: 'Futura PT',
+                    fontSize: 22,
+                    color: Colors.black,
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
-                picture != null
-                    ? Image.file(
-                        picture,
-                        height: 150,
-                      )
-                    : Container(height: 150),
-                Container(
-                  margin: EdgeInsets.only(top: 10),
-                  child: ButtonTheme(
-                    minWidth: 85,
-                    height: 30,
-                    child: RaisedButton(
-                      onPressed: picture != null ? upload : null,
-                      child: Text(
-                        'Upload image',
-                        style: TextStyle(
-                          fontFamily: 'Futura PT',
-                          fontSize: 18,
-                          color: fontcolor,
-                          fontWeight: FontWeight.bold,
-                        ),
+              ),
+              picture != null
+                  ? Image.file(
+                      picture,
+                      height: 150,
+                    )
+                  //Empty container to display if no image was selected.
+                  : Container(height: 150),
+              //Container to hold 'Upload image' button.
+              Container(
+                margin: EdgeInsets.only(top: 10),
+                child: ButtonTheme(
+                  minWidth: 85,
+                  height: 30,
+                  child: RaisedButton(
+                    onPressed: picture != null ? upload : null,
+                    child: Text(
+                      'Upload image',
+                      style: TextStyle(
+                        fontFamily: 'Futura PT',
+                        fontSize: 18,
+                        color: fontcolor,
+                        fontWeight: FontWeight.bold,
                       ),
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(40)),
-                      color: maincolor,
                     ),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(40)),
+                    color: maincolor,
                   ),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),
     );
   }
 
-  bool showSpinner = false;
   Future upload() async {
     var connectivityResult = await (Connectivity().checkConnectivity());
     if (connectivityResult == ConnectivityResult.none) {
@@ -95,9 +94,6 @@ class SelectionState extends State<Selection> {
           message: "Pleas turn on wifi or mobile data",
           icons: Icons.signal_wifi_off);
     } else {
-      setState(() {
-        showSpinner = true;
-      });
       String fileName = Path.basename(picture.path);
       StorageReference storageReference =
           FirebaseStorage.instance.ref().child(fileName);
@@ -147,9 +143,6 @@ class SelectionState extends State<Selection> {
             icons: Icons.error);
         print(e.toString());
       }
-      setState(() {
-        showSpinner = false;
-      });
     }
   }
 }

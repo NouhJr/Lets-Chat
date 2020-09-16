@@ -56,7 +56,7 @@ class _ChatRoomState extends State<ChatRoom> {
                   hintStyle: TextStyle(
                     fontSize: 18,
                     fontFamily: 'Futura PT',
-                    color: Colors.grey,
+                    color: fontcolor,
                   ),
                   fillColor: maincolor,
                   border: InputBorder.none,
@@ -70,7 +70,7 @@ class _ChatRoomState extends State<ChatRoom> {
                   ),
                 ),
                 keyboardType: TextInputType.emailAddress,
-                cursorColor: Colors.grey,
+                cursorColor: fontcolor,
                 controller: user,
               ),
             ),
@@ -190,6 +190,7 @@ class _ChatRoomState extends State<ChatRoom> {
             context,
             RecevierProfile(
               user: receiverUserName,
+              email: recevierEmail,
               senderUser: sender,
               picture: receiverPicture,
               bio: receiverBio,

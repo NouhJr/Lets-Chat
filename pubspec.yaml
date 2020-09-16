@@ -62,7 +62,8 @@ flutter:
   assets:
    - assets/NoUser.jpg
    - assets/phone.png
-   - assets/chatbackground.png
+   - assets/1288076.jpg
+   
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
 

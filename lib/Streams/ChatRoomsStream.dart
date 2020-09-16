@@ -109,7 +109,7 @@ class ChatRoomTile extends StatelessWidget {
         style: TextStyle(
           fontFamily: 'Futura PT',
           fontSize: 22,
-          color: fontcolor,
+          color: Colors.black,
           fontWeight: FontWeight.w600,
         ),
       ),

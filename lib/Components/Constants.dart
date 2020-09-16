@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-var maincolor = const Color(0xff163c41);
+var maincolor = const Color(0xff4e89ae);
 var fontcolor = const Color(0xffffffff);
-const subMainColor = Color(0xFF065999);
+const subMainColor = Color(0xff43658b);
 
 var drawerBoxDecoration = BoxDecoration(
     color: maincolor,
