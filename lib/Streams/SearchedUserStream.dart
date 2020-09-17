@@ -46,8 +46,6 @@ class _SearchedUsersState extends State<SearchedUsers> {
       setState(() {
         tiles.add(tile);
       });
-      SharedPreferences prfs = await SharedPreferences.getInstance();
-      prfs.setStringList('RecentSearch', tiles.cast<String>());
     } catch (e) {
       print(e.toString());
     }

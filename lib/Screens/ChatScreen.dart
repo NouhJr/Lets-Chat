@@ -47,7 +47,7 @@ class _ChatScreenState extends State<ChatScreen>
 
     _controller =
         AnimationController(vsync: this, duration: Duration(milliseconds: 300));
-    _animation = Tween(begin: 660.0, end: 420.0).animate(_controller)
+    _animation = Tween(begin: 660.0, end: 380.0).animate(_controller)
       ..addListener(() {
         setState(() {});
       });
@@ -128,6 +128,7 @@ class _ChatScreenState extends State<ChatScreen>
                     image: AssetImage('assets/1288076.jpg'),
                     fit: BoxFit.fill,
                     width: 1080.0,
+                    height: 2280.0,
                   ),
                 ),
 
@@ -184,7 +185,7 @@ class _ChatScreenState extends State<ChatScreen>
                       //Container to hold send button.
                       Container(
                         padding: EdgeInsets.only(left: 4),
-                        margin: EdgeInsets.only(left: 0.5),
+                        margin: EdgeInsets.only(left: 10),
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
                           color: maincolor,
